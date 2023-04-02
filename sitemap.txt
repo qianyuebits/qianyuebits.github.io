@@ -1,2 +1,9 @@
-http://example.com/2023/04/02/hello-world/
-http://example.com/
+https://qianyuebits.github.io/about/index.html
+https://qianyuebits.github.io/category/index.html
+https://qianyuebits.github.io/tag/index.html
+https://qianyuebits.github.io/2023/04/02/hello-world/
+https://qianyuebits.github.io/
+https://qianyuebits.github.io/tag/jQuery/
+https://qianyuebits.github.io/tag/%E8%A1%A8%E6%A0%BC/
+https://qianyuebits.github.io/tag/%E8%A1%A8%E5%8D%95%E9%AA%8C%E8%AF%81/
+https://qianyuebits.github.io/category/web%E5%89%8D%E7%AB%AF/
