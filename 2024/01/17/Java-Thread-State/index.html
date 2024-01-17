@@ -162,7 +162,7 @@
 <li>由于 I&#x2F;O 阻塞（Blocked on I&#x2F;O）：当 I&#x2F;O 条件发生变化时（例如读取了几个字节的数据）会迁移到可执行状态。</li>
 <li>由于同步阻塞中（Blocked on synchronization）：当获取锁之后会进入执行中状态；</li>
 <li>就绪状态（RUNNABLE 之 READY）<ol>
-<li>就绪状态只是说你资格运行，调度程序(CPU)没有挑选到你，你就永远是就绪状态；</li>
+<li>就绪状态只是说你有资格运行，调度程序(CPU)没有挑选到你，你就永远是就绪状态；</li>
 <li>调用线程的 <code>start()</code> 方法，此线程进入就绪状态；</li>
 <li>当前线程 <code>sleep()</code> 方法结束，其他线程 <code>join()</code> 结束，等待用户输入完毕，某个线程拿到对象锁，这些线程也将进入就绪状态。</li>
 <li>当前线程时间片用完了，调用当前线程的 <code>yield()</code> 方法，当前线程进入就绪状态。</li>
@@ -205,6 +205,8 @@
                     
                     
                         <a href="/tag/Java/"># Java</a>
+                    
+                        <a href="/tag/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"># 多线程</a>
                     
                         
                 </span>

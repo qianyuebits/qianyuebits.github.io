@@ -13,7 +13,7 @@
 
 
 
-<title>Java Thread-ReadWriteLock | 千越</title>
+<title>Java ReadWriteLock | 千越</title>
 
 
 
@@ -135,7 +135,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Java Thread-ReadWriteLock</h1>
+            <h1 class="post-title">Java ReadWriteLock</h1>
             
                 <div class="post-meta">
                     
@@ -153,7 +153,7 @@
         </header>
 
         <div class="post-content">
-            <p>当有一个数据结构有很多线程进行读取操作，但是写操作频率相对较低时，使用 ReadWriteLock（读写锁）会得到优化。读写锁允许同时有很多读者，但是当有一个写锁时，读锁将阻塞，直到写锁被释放。读写锁能否提升性能需要试验。</p>
+            <p>当有一个数据结构有很多线程进行读取操作，但是写操作频率相对较低时，使用 <code>ReadWriteLock</code>（读写锁）会得到优化。读写锁允许同时有很多读者，但是当有一个写锁时，读锁将阻塞，直到写锁被释放。读写锁能否提升性能需要试验。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReaderWriterList</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;T&gt; lockedList;</span><br><span class="line">    <span class="comment">// Make the ordering fair:</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">ReentrantReadWriteLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantReadWriteLock</span>(<span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ReaderWriterList</span><span class="params">(<span class="type">int</span> size, T initialValue)</span> &#123;</span><br><span class="line">        lockedList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;T&gt;(</span><br><span class="line">        Collections.nCopies(size, initialValue));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">set</span><span class="params">(<span class="type">int</span> index, T element)</span> &#123;</span><br><span class="line">        <span class="type">Lock</span> <span class="variable">wlock</span> <span class="operator">=</span> lock.writeLock();</span><br><span class="line">        wlock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> lockedList.set(index, element);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            wlock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">get</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">        <span class="type">Lock</span> <span class="variable">rlock</span> <span class="operator">=</span> lock.readLock();</span><br><span class="line">        rlock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// Show that multiple readers</span></span><br><span class="line">            <span class="comment">// may acquire the read lock:</span></span><br><span class="line">            <span class="keyword">if</span>(lock.getReadLockCount() &gt; <span class="number">1</span>)</span><br><span class="line">                print(lock.getReadLockCount());</span><br><span class="line">            <span class="keyword">return</span> lockedList.get(index);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            rlock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ReaderWriterListTest</span>(<span class="number">30</span>, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         </div>
 
@@ -200,10 +200,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/01/17/JMM/">JMM</a>
+                <a class="prev" rel="prev" href="/2024/01/17/JMM/">JMM（Java 内存模型）</a>
             
             
-            <a class="next" rel="next" href="/2024/01/17/Java-Thread-FutureTask/">Java Thread-FutureTask</a>
+            <a class="next" rel="next" href="/2024/01/17/Java-Thread-FutureTask/">Java FutureTask</a>
             
         </section>
 
