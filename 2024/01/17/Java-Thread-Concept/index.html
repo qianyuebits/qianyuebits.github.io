@@ -13,7 +13,7 @@
 
 
 
-<title>冥想实录 | 千越</title>
+<title>Java Thread 常见概念 | 千越</title>
 
 
 
@@ -200,7 +200,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">冥想实录</h1>
+            <h1 class="post-title">Java Thread 常见概念</h1>
             
                 <div class="post-meta">
                     
@@ -209,7 +209,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2023-04-26&nbsp;&nbsp;11:25:43</a>
+                        Date: <a href="#">2024-01-17&nbsp;&nbsp;21:29:29</a>
                         </span>
                     
                     
@@ -218,33 +218,26 @@
         </header>
 
         <div class="post-content">
-            <h2 id="冥想学习"><a href="#冥想学习" class="headerlink" title="冥想学习"></a>冥想学习</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><blockquote>
-<p>来源：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/369171415/answer/1974522060">冥想难道只能将注意力集中到呼吸上？</a></p>
-</blockquote>
-<p>心理学的接纳承诺疗法中，认为我们拥有“三个自我”：</p>
-<ul>
-<li><strong>概念化自我：</strong>所有信念、想法、观点、事实、判断、记忆、意象等都来自这部分的自我概念，通常用来描述“我是谁”，很多人会将“我的想法”错当是“我”。</li>
-<li><strong>经验性自我</strong>：留心注意我们的经验，是一个“接触当下”的持续不断的过程；</li>
-<li><strong>观察性自我：</strong>一种观察“发生了什么”的立场和视角，在任何时刻观察任何正在被观察的事物的“我”。</li>
-</ul>
-<p>举个例子：</p>
-<ul>
-<li><p>小 A 认为自己是一个“内向、自卑、不受欢迎的人”，这就是他的概念化自我；</p>
-</li>
-<li><p>他走在大自然里，全然投入地呼吸着新鲜的空气，指尖触碰大树的枝干，耳朵听着树林间清脆的鸟叫声，这一切接触当下的、体验式的他，则是他的经验性自我；</p>
-</li>
-<li><p>他一边生着气，一边能清醒地意识到自己在生气，能够看到自己因为生气而身体颤抖、声音变低、说着一些伤人的话，那个仿佛“上帝视角”般的自己，就是“观察性自我。”；</p>
-</li>
-</ul>
-<p><strong>人们常常太过于沉浸于“概念化自我”当中，对自己的想法、信念深信不疑，很多时候会带着自己的立场和角度去看待他人。就好像用望远镜看世界一样，看到的都是镜筒里的那部分，而不一定能看到全貌</strong>，甚至都不一定能意识到发生了什么，只是感受到了不愉快，这是观察性自我的空间较为有限。</p>
-<p>在这个过程中，我们可能就忽略了当下的体验，经验性自我的空间较为有限。例如，我们吃饭的时候总会想些什么事或者看手机，对放入口中的食物的形状、颜色、口感、咀嚼的过程等感受全然不知，也许最多只留下了“好不好吃、喜不喜欢吃”这样的评价性感受而已。</p>
-<p>所以，冥想、正念，是<strong>帮助我们能够适当地从概念性自我中走出来，去不带评判地体验当下，并能够较为客观、清晰地看到发生的一切，发展更良好的“经验性自我”和“观察性自我”。</strong></p>
-<h3 id="方式"><a href="#方式" class="headerlink" title="方式"></a>方式</h3><ol>
-<li>找一个舒服的姿势，比如平躺着，盘腿坐着；</li>
-<li>放松：触觉消失</li>
-<li>呼吸放缓（一呼一吸 15s，缓慢来），腹部呼吸，将精力集中在呼吸上，意识到分神了就继续回到呼吸上，5-15 min；</li>
+            <h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><p>死锁的概念：在两个或多个并发进程中，如果每个进程持有某种资源而又都等待别的进程释放它或它们现在保持着的资源，在未改变这种状态之前都不能向前推进，称这一组进程产生了死锁。通俗地讲，就是两个或多个进程被无限期地阻塞、相互等待的一种状态。产生死锁的必要条件：</p>
+<ol>
+<li>互斥（mutual exclusion），一个资源每次只能被一个进程使用；</li>
+<li>不可抢占（no preemption），进程已获得的资源，在未使用完之前，不能强行剥夺；</li>
+<li>占有并等待（hold andwait），一个进程因请求资源而阻塞时，对已获得的资源保持不放；</li>
+<li>环形等待（circular wait），若干进程之间形成一种首尾相接的循环等待资源关系；<br>这四个条件是死锁的必要条件，只要系统发生死锁，这些条件必然成立，而只要上述条件之一不满足，就不会发生死锁。</li>
 </ol>
-<h2 id="实录"><a href="#实录" class="headerlink" title="实录"></a>实录</h2>
+<p>死锁的解除与预防：理解了死锁的原因，尤其是产生死锁的四个必要条件，就可以最大可能地避免、预防和解除死锁。所以，在系统设计、进程调度等方面注意如何不让这四个必要条件成立，如何确定资源的合理分配算法，避免进程永久占据系统资源。此外，也要防止进程在处于等待状态的情况下占用资源。因此，对资源的分配要给予合理的规划。</p>
+<p>比如哲学家问题，可以让其中一个哲学家先拿左边的筷子，后拿右边的，而其余的哲学家则相反，这样就破坏了最后一个条件，也就不会造成死锁。</p>
+<h1 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a><code>volatile</code></h1><p><code>volatile</code> 变量自身具有下列特性：</p>
+<ol>
+<li>可见性：对一个 <code>volatile</code> 变量的读，总是能看到（任意线程）对这个 <code>volatile</code> 变量最后的写入；</li>
+<li>原子性：对任意单个 <code>volatile</code> 变量的读&#x2F;写具有原子性，但类似于 <code>volatile++</code> 这种复合操作不具有原子性（不依赖于任何其他变量的读写）；</li>
+<li>禁止指令重排；</li>
+</ol>
+<p>简而言之：<br>锁提供了两种主要特性：互斥（mutual exclusion） 和可见性（visibility）。互斥即一次只允许一个线程持有某个特定的锁，因此可使用该特性实现对共享数据的协调访问协议，这样，一次就只有一个线程能够使用该共享数据。可见性要更加复杂一些，它必须确保释放锁之前对共享数据做出的更改对于随后获得该锁的另一个线程是可见的 —— 如果没有同步机制提供的这种可见性保证，线程看到的共享变量可能是修改前的值或不一致的值，这将引发许多严重问题（这个问题的缘由是因为Java的内存模型 —— 线程有自己的工作内存空间）。<br>以上说的是 synchronized 关键字或者说锁机制提供的特性，而 <code>volatile</code> 只是保证了可见性，而不能保证互斥。使用例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="type">boolean</span> shutdownRequested;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">shutdown</span><span class="params">()</span> &#123; shutdownRequested = <span class="literal">true</span>; &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doWork</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (!shutdownRequested) &#123;</span><br><span class="line">        <span class="comment">// do stuff</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与锁相比，<code>volatile</code> 变量是一种非常简单但同时又非常脆弱的同步机制，它在某些情况下将提供优于锁的性能和伸缩性。如果严格遵循 <code>volatile</code> 的使用条件 —— 即变量真正独立于其他变量和自己以前的值。在某些情况下可以使用 <code>volatile</code> 代替 synchronized 来简化代码。然而，使用 <code>volatile</code> 的代码往往比使用锁的代码更加容易出错。本文介绍的模式涵盖了可以使用 <code>volatile</code> 代替 <code>synchronized</code> 的最常见的一些用例。遵循这些模式（注意使用时不要超过各自的限制）可以帮助您安全地实现大多数用例，使用 <code>volatile</code> 变量获得更佳性能。</p>
+
         </div>
 
         
@@ -258,7 +251,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://qianyuebits.github.io/2023/04/26/%E5%86%A5%E6%83%B3%E5%AE%9E%E5%BD%95/">https://qianyuebits.github.io/2023/04/26/%E5%86%A5%E6%83%B3%E5%AE%9E%E5%BD%95/</a></span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/17/Java-Thread-Concept/">https://qianyuebits.github.io/2024/01/17/Java-Thread-Concept/</a></span>
                     </p>
                 
                 
@@ -276,10 +269,6 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
-                    
-                        <a href="/tag/%E4%B8%AA%E4%BA%BA%E6%88%90%E9%95%BF/"># 个人成长</a>
-                    
-                        
                 </span>
             </div>
             <div>
@@ -290,10 +279,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/01/17/Java-ThreadPool/">Java ThreadPool</a>
+                <a class="prev" rel="prev" href="/2024/01/17/Java-Thread-State/">Java Thread 状态</a>
             
             
-            <a class="next" rel="next" href="/2023/04/11/%E8%AF%BB%E4%B9%A6%E7%AF%87-%E3%80%8A%E9%AB%98%E6%95%88%E8%83%BD%E4%BA%BA%E5%A3%AB%E7%9A%84%E4%B8%83%E4%B8%AA%E4%B9%A0%E6%83%AF%E3%80%8B/">读书篇:《高效能人士的七个习惯》</a>
+            <a class="next" rel="next" href="/2024/01/17/Java-Thread-Methods/">Java Thread Methods</a>
             
         </section>
 
