@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="千越">
+
+
+
+
+
+<title>Java Thread-CompletionService | 千越</title>
+
+
+
+    <link rel="icon" href="/image/icon.jpeg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">千越的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">千越的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java Thread-CompletionService</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2024-01-17&nbsp;&nbsp;22:18:02</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>使用场景：提交多个任务，并且都需要返回值。<br>手动实现：将每一个任务都实现为 <code>Callable</code>，提交任务后，将 <code>Future</code> 记录到容器中，提交完成后遍历获取所有的结果。<br>缺点：不能按照任务完成的先后顺序去获取结果，只能按照添加顺序获取。</p>
+<p><code>CompletionService</code> 则可以实现该功能，该接口只有一个实现类：<code>ExecutorCompletionService</code>。</p>
+<p>接下来看一个例子。楼主有一大堆 <code>*.java</code> 文件，需要计算它们的代码总行数。利用 <code>ExecutorCompletionService</code> 可以写出很简单的多线程处理代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">countLines</span><span class="params">(List&lt;Path&gt; javaFiles)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 根据处理器数量创建线程池。虽然多线程并不保证能够提升性能，但适量地</span></span><br><span class="line">    <span class="comment">// 开线程一般可以从系统骗取更多资源。</span></span><br><span class="line">    <span class="type">ExecutorService</span> <span class="variable">es</span> <span class="operator">=</span> Executors.newFixedThreadPool(</span><br><span class="line">                              Runtime.getRuntime().availableProcessors() * <span class="number">2</span>);</span><br><span class="line">    <span class="comment">// 使用 ExecutorCompletionService 内建的阻塞队列。</span></span><br><span class="line">    <span class="type">CompletionService</span> <span class="variable">cs</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExecutorCompletionService</span>(es);</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 按文件向 CompletionService 提交任务。</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">final</span> Path javaFile : javaFiles) &#123;</span><br><span class="line">        cs.submit(<span class="keyword">new</span> <span class="title class_">Callable</span>&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Integer <span class="title function_">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="comment">// 略去计算单个文件行数的代码。</span></span><br><span class="line">                <span class="keyword">return</span> countLines(javaFile);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">loc</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> javaFiles.size();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            <span class="comment">// take 方法等待下一个结果并返回 Future 对象。不直接返回计算结果是为了</span></span><br><span class="line">            <span class="comment">// 捕获计算时可能抛出的异常。</span></span><br><span class="line">            <span class="comment">// poll 不等待，有结果就返回一个 Future 对象，否则返回 null。</span></span><br><span class="line">            loc += cs.take().get();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> loc;</span><br><span class="line">     &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 关闭线程池。也可以将线程池提升为字段以便重用。</span></span><br><span class="line">        <span class="comment">// 如果任务线程（Callable#call）能响应中断，用 shutdownNow 更好。</span></span><br><span class="line">        es.shutdown();</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，<code>CompletionService</code> 也不是到处都能用，它不适合处理任务数量有限但个数不可知的场景。例如，要统计某个文件夹中的文件个数，在遍历子文件夹的时候也会“递归地”提交新的任务，但最后到底提交了多少，以及在什么时候提交完了所有任务，都是未知数，无论 <code>CompletionService</code> 还是线程池都无法进行判断。这种情况只能直接用线程池来处理。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/17/Java-Thread-CompletionService/">https://qianyuebits.github.io/2024/01/17/Java-Thread-CompletionService/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/Java/"># Java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/01/17/Java-Thread-CountDownLatch/">Java Thread-CountDownLatch</a>
+            
+            
+            <a class="next" rel="next" href="/2024/01/17/Java-ThreadLocal/">Java ThreadLocal</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 千越 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

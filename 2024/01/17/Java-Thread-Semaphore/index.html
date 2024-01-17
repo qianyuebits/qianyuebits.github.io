@@ -13,7 +13,7 @@
 
 
 
-<title>归档: 2024/1 | 千越</title>
+<title>Java Thread-Semaphore | 千越</title>
 
 
 
@@ -128,107 +128,88 @@
     }
 </script>
             <div class="main">
-                <div class="post-wrap archive">
+                <div class="container">
     
     
-        
 
-        
-            <h3>2024</h3>
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-Semaphore/">Java Thread-Semaphore</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
     
-        
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java Thread-Semaphore</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2024-01-17&nbsp;&nbsp;22:42:26</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>** 考察理解程度：使用信号量实现生产者消费者。**</p>
+<p>一个 Lock 只允许同时有一个线程接触一个资源，但是信号量允许 N 个线程同时操作资源。比如说数据库连接，使用信号量可以控制最大的连接数量。使用方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Semaphore</span> <span class="variable">semaphore</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Semaphore</span>(SIZE);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="comment">//获取资源</span></span><br><span class="line">     resource = semaphore.acquire();</span><br><span class="line">&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">     e.printStackTrace();</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">     <span class="comment">//归还资源</span></span><br><span class="line">     semaphore.release()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
 
         
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/17/Java-Thread-Semaphore/">https://qianyuebits.github.io/2024/01/17/Java-Thread-Semaphore/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
 
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-Condition/">Java Thread-Condition</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
+            </section>
         
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/Java/"># Java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2024/01/17/Java-Thread-Condition/">Java Thread-Condition</a>
+            
+        </section>
 
-        
 
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/JMM/">JMM</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-ReadWriteLock/">Java Thread-ReadWriteLock</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-FutureTask/">Java Thread-FutureTask</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-CyclicBarrier/">Java Thread-CyclicBarrier</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-CountDownLatch/">Java Thread-CountDownLatch</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-CompletionService/">Java Thread-CompletionService</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-ThreadLocal/">Java ThreadLocal</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2024/01/17/Java-Thread-State/">Java Thread 状态</a>
-            <span class="archive-item-date">2024-01-17</span>
-        </article>
-    
-    
-    <nav class="pagination">
-        <span class="page-number current">1</span><a class="page-number" href="/archives/2024/01/page/2/">2</a>
-    </nav>
-
+    </article>
 </div>
+
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">
