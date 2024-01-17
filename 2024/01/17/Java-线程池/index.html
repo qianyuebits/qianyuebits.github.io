@@ -131,6 +131,71 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
@@ -153,7 +218,85 @@
         </header>
 
         <div class="post-content">
-            
+            <p>在 Java 5 之后，并发编程引入了一堆新的启动、调度和管理线程的 API。Executor 框架便是 Java 5 中引入的，其内部使用了线程池机制，它在 <code>java.util.cocurrent</code> 包下，通过该框架来控制线程的启动、执行和关闭，可以简化并发编程的操作。因此，在 Java 5 之后，通过 <code>Executor</code> 来启动线程比使用 <code>Thread</code> 的 start 方法更好，除了更易管理，效率更好（用线程池实现，节约开销）外。Executor 框架包括：线程池，<code>Executor</code>，<code>Executors</code>，<code>ExecutorService</code>，<code>CompletionService</code>，<code>Future</code>，<code>Callable</code> 等。</p>
+<p><code>Executor</code> 接口中之定义了一个方法 <code>execute（Runnable command）</code>，该方法接收一个 <code>Runable</code> 实例，它用来执行一个任务，任务即一个实现了 <code>Runnable</code> 接口的类。<code>ExecutorService</code> 接口继承自 <code>Executor</code> 接口，它提供了更丰富的实现多线程的方法，比如 <code>ExecutorService</code> 提供了关闭自己的方法，以及可为跟踪一个或多个异步任务执行状况而生成 <code>Future</code> 的方法。</p>
+<p>官方文档：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">The ExecutorService interface supplements execute with a similar, but more versatile submit method. Like execute, submit accepts Runnable objects, but also accepts Callable objects, which allow the task to return a value. The submit method returns a Future object, which is used to retrieve the Callable return value and to manage the status of both Callable and Runnable tasks.（注意最后一句话的含义：并不为 Runnable 任务维护返回值）</span><br><span class="line">Using worker threads minimizes the overhead due to thread creation. Thread objects use a significant amount of memory, and in a large-scale application, allocating and deallocating many thread objects creates a significant memory management overhead.</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleThreadPool</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">5</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="type">Runnable</span> <span class="variable">worker</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WorkerThread</span>(<span class="string">&quot;&quot;</span> + i);</span><br><span class="line">            executor.execute(worker);</span><br><span class="line">          &#125;</span><br><span class="line">        executor.shutdown(); <span class="comment">// This will make the executor accept no new threads and finish all existing threads in the queue</span></span><br><span class="line">        <span class="keyword">while</span> (!executor.isTerminated()) &#123; <span class="comment">// Wait until all threads are finish,and also you can use &quot;executor.awaitTermination();&quot; to wait</span></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;Finished all threads&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="接口介绍"><a href="#接口介绍" class="headerlink" title="接口介绍"></a>接口介绍</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize,</span></span><br><span class="line"><span class="params">                              <span class="type">int</span> maximumPoolSize,</span></span><br><span class="line"><span class="params">                              <span class="type">long</span> keepAliveTime,</span></span><br><span class="line"><span class="params">                              TimeUnit unit,</span></span><br><span class="line"><span class="params">                              BlockingQueue&lt;Runnable&gt; workQueue,</span></span><br><span class="line"><span class="params">                              RejectedExecutionHandler handler)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>corePoolSize</code> 线程池中的核心线程数，当提交一个任务时，线程池创建一个新线程执行任务，直到当前线程数等于 <code>corePoolSize</code>，即使有其他空闲线程能够执行新来的任务，也会继续创建线程；如果当前线程数为 <code>corePoolSize</code>，继续提交的任务被保存到阻塞队列中，等待被执行；如果执行了线程池的 <code>prestartAllCoreThreads()</code> 方法，线程池会提前创建并启动所有核心线程；</li>
+<li><code>workQueue</code> 用来保存等待被执行的任务的阻塞队列；</li>
+<li><code>maximumPoolSize</code> 线程池中允许的最大线程数。如果当前阻塞队列满了，且继续提交任务，则创建新的线程执行任务，前提是当前线程数小于 <code>maximumPoolSize</code>，当阻塞队列是无界队列，则 <code>maximumPoolSize</code> 则不起作用，因为无法提交至核心线程池的线程会一直持续地放入 <code>workQueue</code>；</li>
+<li><code>keepAliveTime</code> 线程空闲时的存活时间，即当线程没有任务执行时，该线程继续存活的时间；默认情况下，该参数只在线程数大于 <code>corePoolSize</code> 时才有用，超过这个时间的空闲线程将被终止；</li>
+<li><code>unit</code> <code>keepAliveTime</code> 的单位；</li>
+<li><code>threadFactory</code> 创建线程的工厂，通过自定义的线程工厂可以给每个新建的线程设置一个具有识别度的线程名。默认为 <code>DefaultThreadFactoryhandler</code> </li>
+<li><code>handler</code> 线程池的饱和策略，当阻塞队列满了，且没有空闲的工作线程，如果继续提交任务，必须采取一种策略处理该任务，线程池提供了 4 种策略：           <ul>
+<li><code>AbortPolicy</code> 直接抛出异常，默认策略；</li>
+<li><code>CallerRunsPolicy</code> 用调用者所在的线程来执行任务；</li>
+<li><code>DiscardOldestPolicy</code> 丢弃阻塞队列中靠最前的任务，并执行当前任务；</li>
+<li><code>DiscardPolicy</code> 直接丢弃任务；<br>  当然也可以根据应用场景实现 <code>RejectedExecutionHandler</code> 接口，自定义饱和策略，如记录日志或持久化存储不能处理的任务。</li>
+</ul>
+</li>
+</ul>
+<p>根据 <code>ThreadPoolExecutor</code> 源码前面大段的注释，我们可以看出，当试图通过 <code>excute</code> 方法将一个 <code>Runnable</code> 任务添加到线程池中时，按照<br>如下顺序来处理：</p>
+<ol>
+<li>如果线程池中的线程数量少于 <code>corePoolSize</code>，即使线程池中有空闲线程，也会优先创建一个新的线程来执行新添加的任务；</li>
+<li>如果线程池中的线程数量大于等于 <code>corePoolSize</code>，但缓冲队列 <code>workQueue</code> 未满，则将新添加的任务放到 <code>workQueue</code> 中，按照 FIFO 的原则依次等待执行（线程池中有线程空闲出来后依次将缓冲队列中的任务交付给空闲的线程执行）；</li>
+<li>如果线程池中的线程数量大于等于 <code>corePoolSize</code>，且缓冲队列 <code>workQueue</code> 已满，但线程池中的线程数量小于 <code>maximumPoolSize</code>，则会创建新的线程来处理被添加的任务；</li>
+<li>如果线程池中的线程数量等于了 <code>maximumPoolSize</code>，有 4 种才处理方式（该构造方法调用了含有5个参数的构造方法，并将最后一个构造方法为 <code>RejectedExecutionHandler</code> 类型，它在处理线程溢出时有 4 种方式，这里不再细说，要了解的，自己可以阅读下源码）；</li>
+<li>当线程池中超过 <code>corePoolSize</code> 数量，空闲线程达到 <code>keepAliveTime</code> 时，会关闭空闲线程；</li>
+<li>当设置了 <code>allowCoreThreadTimeout(true)</code> 时，线程池中 <code>corePoolSize</code> 线程空闲时间达到 <code>keepAliveTime</code> 也将关闭；</li>
+</ol>
+<p>总结起来，也即是说，当有新的任务要处理时，先看线程池中的线程数量是否大于 corePoolSize，再看缓冲队列 <code>workQueue</code> 是否满，最后看线程池中的线程数量是否大于 <code>maximumPoolSize</code>。另外，当线程池中的线程数量大于 <code>corePoolSize</code> 时，如果里面有线程的空闲时间超过了 <code>keepAliveTime</code>，就将其移除线程池，这样，可以动态地调整线程池中线程的数量。</p>
+<h1 id="线程池创建"><a href="#线程池创建" class="headerlink" title="线程池创建"></a>线程池创建</h1><p><code>Executors</code> 提供了一系列工厂方法用于创建线程池，返回的线程池都实现了 <code>ExecutorService</code> 接口，可以认为是一些常见使用配置的快捷创建方式。</p>
+<h2 id="newSingleThreadExecutor"><a href="#newSingleThreadExecutor" class="headerlink" title="newSingleThreadExecutor()"></a><code>newSingleThreadExecutor()</code></h2><p>初始化的线程池中只有一个线程，如果该线程异常结束，会重新创建一个新的线程继续执行任务，唯一的线程可以保证所提交任务的顺序执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newSingleThreadExecutor</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FinalizableDelegatedExecutorService</span></span><br><span class="line">        (<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">                                <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="newCachedThreadPool"><a href="#newCachedThreadPool" class="headerlink" title="newCachedThreadPool()"></a><code>newCachedThreadPool()</code></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newCachedThreadPool</span><span class="params">()</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                                   <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                                   <span class="keyword">new</span> <span class="title class_">SynchronousQueue</span>&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>线程池的线程数可达到 <code>Integer.MAX_VALUE</code>，即 2147483647，内部使用 <code>SynchronousQueue</code> 作为阻塞队列； 和 <code>newFixedThreadPool</code> 创建的线程池不同，<code>newCachedThreadPool</code> 在没有任务执行时，当线程的空闲时间超过 <code>keepAliveTime</code>，会自动释放线程资源，当提交新任务时，如果没有空闲线程，则创建新线程执行任务，会导致一定的系统开销。执行过程与前两种稍微不同：</p>
+<ul>
+<li>主线程调用 <code>SynchronousQueue</code> 的 <code>offer()</code>方法放入 task， 倘若此时线程池中有空闲的线程尝试读取 <code>SynchronousQueue</code> 的 task， 即调用了 <code>SynchronousQueue</code> 的 <code>poll()</code>， 那么主线程将该 task 交给空闲线程。 否则执行下一步；</li>
+<li>当线程池为空或者没有空闲的线程， 则创建新的线程执行任务；</li>
+<li>执行完任务的线程倘若在 60s 内仍空闲， 则会被终止。 因此长时间空闲的 <code>CachedThreadPool</code> 不会持有任何线程资源；</li>
+</ul>
+<h2 id="newFixedThreadPool-int"><a href="#newFixedThreadPool-int" class="headerlink" title="newFixedThreadPool(int)"></a><code>newFixedThreadPool(int)</code></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title function_">newFixedThreadPool</span><span class="params">(<span class="type">int</span> nThreads)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(nThreads, nThreads,</span><br><span class="line">                                <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>线程池的线程数量达 <code>corePoolSize</code> 后，即使线程池没有可执行任务时，也不会释放线程。<code>FixedThreadPool</code> 的工作队列为无界队列 <code>LinkedBlockingQueue</code>（队列容量为 <code>Integer.MAX_VALUE</code>）， 这会导致以下问题：</p>
+<ul>
+<li>线程池里的线程数量不超过 <code>corePoolSize</code>，这导致了 <code>maximumPoolSize</code> 和 <code>keepAliveTime</code> 将会是个无用参数；</li>
+<li>由于使用了无界队列， 所以 <code>FixedThreadPool</code> 永远不会拒绝， 即饱和策略失效；</li>
+</ul>
+<h2 id="newScheduledThreadPool-int"><a href="#newScheduledThreadPool-int" class="headerlink" title="newScheduledThreadPool(int)"></a><code>newScheduledThreadPool(int)</code></h2><p>调度型线程池，这个池子里的线程可以为一个任务提供延期执行功能和周期执行功能，非常方便。</p>
+<h1 id="排队策略"><a href="#排队策略" class="headerlink" title="排队策略"></a>排队策略</h1><p>下面说说几种排队的策略：</p>
+<ol>
+<li><strong>直接提交</strong> 缓冲队列采用 <code>SynchronousQueue</code>，它将任务直接交给线程处理而不保持它们。如果不存在可用于立即运行任务的线程（即线程池中的线程都在工作），则试图把任务加入缓冲队列将会失败，因此会构造一个新的线程来处理新添加的任务，并将其加入到线程池中。直接提交通常要求无界 <code>maximumPoolSizes</code>（Integer.MAX_VALUE） 以避免拒绝新提交的任务。<code>newCachedThreadPool</code> 采用的便是这种策略；</li>
+<li><strong>无界队列</strong> 使用无界队列（典型的便是采用预定义容量的 <code>LinkedBlockingQueue</code>，理论上是该缓冲队列可以对无限多的任务排队）将导致在所有 <code>corePoolSize</code> 线程都工作的情况下将新任务加入到缓冲队列中。这样，创建的线程就不会超过 <code>corePoolSize</code>，也因此，<code>maximumPoolSize</code> 的值也就无效了。当每个任务完全独立于其他任务，即任务执行互不影响时，适合于使用无界队列。<code>newFixedThreadPool</code> 采用的便是这种策略；</li>
+<li><strong>有界队列</strong> 当使用有限的 <code>maximumPoolSizes</code> 时，有界队列（一般缓冲队列使用 <code>ArrayBlockingQueue</code>，并制定队列的最大长度）有助于防止资源耗尽，但是可能较难调整和控制，队列大小和最大池大小需要相互折衷，需要设定合理的参数；</li>
+</ol>
+<p><code>Executors</code> 类提供了使用了 <code>ThreadPoolExecutor</code> 的简单的 <code>ExecutorService</code> 实现，但是 <code>ThreadPoolExecutor</code> 提供的功能远不止于此。我们可以在创建 <code>ThreadPoolExecutor</code> 实例时指定活动线程的数量，我们也可以限制线程池的大小并且创建我们自己的 <code>RejectedExecutionHandler</code> 实现来处理不能适应工作队列的工作。这里是我们自定义的 <code>RejectedExecutionHandler</code> 接口的实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.RejectedExecutionHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RejectedExecutionHandlerImpl</span> <span class="keyword">implements</span> <span class="title class_">RejectedExecutionHandler</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">rejectedExecution</span><span class="params">(Runnable r, ThreadPoolExecutor executor)</span> &#123;</span><br><span class="line">        System.out.println(r.toString() + <span class="string">&quot; is rejected&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="提交任务"><a href="#提交任务" class="headerlink" title="提交任务"></a>提交任务</h1><p>在 Java 5 之后，任务分两类：一类是实现了 <code>Runnable</code> 接口的类，一类是实现了 <code>Callable</code> 接口的类。两者都可以被 <code>ExecutorService</code> 执行，但是 <code>Runnable</code> 任务没有返回值，而 <code>Callable</code> 任务有返回值。并且 <code>Callable</code> 的 <code>call()</code> 方法只能通过 <code>ExecutorService</code> 的 <code>submit(Callable&lt;T&gt; task)</code> 方法来执行，并且返回一个 <code>Future&lt;T&gt;</code>，是表示任务等待完成的 <code>Future</code>。</p>
+<p>当将一个 <code>Callable</code> 的对象传递给 <code>ExecutorService</code> 的 <code>submit</code> 方法，则该 <code>call</code> 方法自动在一个线程上执行，并且会返回执行结果 <code>Future</code> 对象。同样，将 <code>Runnable</code> 的对象传递给 <code>ExecutorService</code> 的 <code>submit</code> 方法，则该 <code>run</code> 方法自动在一个线程上执行，并且会返回执行结果 <code>Future</code> 对象，但是在该 <code>Future</code> 对象上调用 <code>get()</code> 方法，将返回 null。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Submits a value-returning task for execution and returns a</span></span><br><span class="line"><span class="comment"> * Future representing the pending results of the task. The</span></span><br><span class="line"><span class="comment"> * Future&#x27;s &lt;tt&gt;get&lt;/tt&gt; method will return the task&#x27;s result upon</span></span><br><span class="line"><span class="comment"> * successful completion.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&lt;T&gt; Future&lt;T&gt; <span class="title function_">submit</span><span class="params">(Callable&lt;T&gt; task)</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Submits a Runnable task for execution and returns a Future</span></span><br><span class="line"><span class="comment"> * representing that task. The Future&#x27;s &lt;tt&gt;get&lt;/tt&gt; method will</span></span><br><span class="line"><span class="comment"> * return the given result upon successful completion.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">&lt;T&gt; Future&lt;T&gt; <span class="title function_">submit</span><span class="params">(Runnable task, T result)</span>;</span><br><span class="line">注意：这个 result 是调用的时候就写死的。So，我是不是可以传递一个线程进去，这样就可以实现串行了？</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Submits a Runnable task for execution and returns a Future</span></span><br><span class="line"><span class="comment"> * representing that task. The Future&#x27;s &lt;tt&gt;get&lt;/tt&gt; method will</span></span><br><span class="line"><span class="comment"> * return &lt;tt&gt;null&lt;/tt&gt; upon &lt;em&gt;successful&lt;/em&gt; completion.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Future&lt;?&gt; submit(Runnable task);</span><br><span class="line">注意：Future 会返回 Null</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CallableAndFuture</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">threadPool</span> <span class="operator">=</span> Executors.newSingleThreadExecutor();<span class="comment">// 创建一个线程即可</span></span><br><span class="line">        Future&lt;String&gt; future = threadPool.submit(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Callable</span>&lt;String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> String <span class="title function_">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">                        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;   </span><br><span class="line">            );</span><br><span class="line">        System.out.println(<span class="string">&quot;等待结果：&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;拿到结果：&quot;</span> + future.get());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="关闭线程池"><a href="#关闭线程池" class="headerlink" title="关闭线程池"></a>关闭线程池</h1><p>线程池可以通过两种方式予以关闭：<code>shutdown</code> 方法可以阻止提交新任务，继续提交将会抛出 <code>RejectedExecutionException</code> 异常，<code>shutdownNow</code> 不但会阻止提交新任务，同时也会调用所有执行任务的 <code>interrupt</code> 方法（因此其实线程中是有一组完善的 cancel 机制的，不需要额外添加）：</p>
+<ul>
+<li><code>shutdown()</code> will just tell the executor service that it can’t accept new tasks, but the already submitted tasks continue to run</li>
+<li><code>shutdownNow()</code> will do the same AND will try to cancel the already submitted tasks by interrupting the relevant threads. Note that if your tasks ignore the interruption, shutdownNow will behave exactly the same way as shutdown.</li>
+</ul>
+<p>当调用 <code>shutdown()</code> 或者 <code>shutdownNow()</code> 后，<code>ExecutorService.isShutdown()</code> 会返回 True，如果所有任务执行完成&#x2F;取消，则 <code>ExecutorService.	isTerminated()</code> 会返回 True。</p>
+<p>线程池在 <code>shutdownNow</code> 的时候会尝试取消所有的任务(<code>interrupt</code>)，但是如果想要取消一个呢？<code>Submit()</code>的任务可以做到 —— 它返回的对象是 <code>Future&lt;?&gt;</code>，这个对象可以调用 <code>cancel</code> 方法，这个方法需要传递一个 <code>boolean</code> 参数，关于该参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">true if the thread executing this task should be interrupted; otherwise, in-progress tasks are allowed to complete</span><br></pre></td></tr></table></figure>
+
+<p>之后 <code>Future.isCancelled()</code> 方法都会返回 true，调用 <code>Future.get()</code> 方法都会抛出 <code>CancellationException</code> 异常。</p>
+
         </div>
 
         
