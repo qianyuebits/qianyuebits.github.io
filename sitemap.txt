@@ -1,4 +1,4 @@
-https://qianyuebits.github.io/2024/01/18/Android-%E9%9D%A2%E8%AF%95%EF%BC%88%E6%8C%81%E7%BB%AD-Update%EF%BC%89/
+https://qianyuebits.github.io/2024/01/18/Android-Interview/
 https://qianyuebits.github.io/2024/01/18/Android-Activity-Lifecycle/
 https://qianyuebits.github.io/2018/12/04/Android-Intent-FLAG/
 https://qianyuebits.github.io/2024/01/18/Android-Service/
