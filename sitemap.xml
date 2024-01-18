@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Java-Sync-Lock/</loc>
-    
-    <lastmod>2024-01-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Java-Generics/</loc>
     
     <lastmod>2024-01-18</lastmod>
@@ -222,13 +213,6 @@
   
   <url>
     <loc>https://qianyuebits.github.io/tag/%E4%B8%AA%E4%BA%BA%E6%88%90%E9%95%BF/</loc>
-    <lastmod>2024-01-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://qianyuebits.github.io/tag/%E7%BA%BF%E7%A8%8B%E9%94%81/</loc>
     <lastmod>2024-01-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
