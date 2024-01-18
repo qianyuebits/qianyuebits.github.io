@@ -240,7 +240,8 @@
 <p>方法区中存在一块区域叫做<strong>运行时常量池</strong>，当类被 Java 虚拟机加载后， <code>.class</code> 文件中的常量就存放在方法区的运行时常量池中。而且在运行期间，可以向常量池中添加新的常量。如 String 类的 <code>intern()</code> 方法就能在运行期间向常量池中添加字符串常量。</p>
 <h2 id="直接内存（堆外内存）"><a href="#直接内存（堆外内存）" class="headerlink" title="直接内存（堆外内存）"></a>直接内存（堆外内存）</h2><p>在 NIO 中引入了一种基于通道和缓冲的 IO 方式。它可以通过调用本地方法直接分配 Java 虚拟机之外的内存，然后通过一个存储在堆中的 <code>DirectByteBuffer</code> 对象直接操作该内存，而无须先将外部内存中的数据复制到堆中再进行操作，从而提高了数据操作的效率。</p>
 <p>直接内存的大小不受 Java 虚拟机控制，但既然是内存，当内存不足时就会抛出 <code>OutOfMemoryError</code> 异常。</p>
-<h2 id="TLAB（Thread-Local-Allocation-Buffer）"><a href="#TLAB（Thread-Local-Allocation-Buffer）" class="headerlink" title="TLAB（Thread Local Allocation Buffer）"></a>TLAB（Thread Local Allocation Buffer）</h2><h1 id="内存回收（GC）"><a href="#内存回收（GC）" class="headerlink" title="内存回收（GC）"></a>内存回收（GC）</h1><h2 id="垃圾判断"><a href="#垃圾判断" class="headerlink" title="垃圾判断"></a>垃圾判断</h2><ol>
+<h2 id="TLAB（Thread-Local-Allocation-Buffer）"><a href="#TLAB（Thread-Local-Allocation-Buffer）" class="headerlink" title="TLAB（Thread Local Allocation Buffer）"></a>TLAB（Thread Local Allocation Buffer）</h2><p>在线程初始化时，同时也会申请一块指定大小的内存，只给当前线程使用，这样每个线程都单独拥有一个空间，如果需要分配内存，就在自己的空间上分配，这样就不存在竞争的情况，可以大大提升分配效率 TLAB空间的内存非常小，缺省情况下仅占有整个 Eden 空间的 1%。</p>
+<h1 id="内存回收（GC）"><a href="#内存回收（GC）" class="headerlink" title="内存回收（GC）"></a>内存回收（GC）</h1><h2 id="垃圾判断"><a href="#垃圾判断" class="headerlink" title="垃圾判断"></a>垃圾判断</h2><ol>
 <li>引用计数法</li>
 <li>可达性分析</li>
 </ol>
@@ -257,8 +258,8 @@
 <li><strong>复制（Copying）算法</strong> 它将可用的内存分为两块，每次只用其中一块，当这一块内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已经使用过的内存空间一次性清理掉。</li>
 <li><strong>标记-整理（Mark-Compact）算法</strong> 让所有存活对象都向一端移动，然后直接清理掉边界以外的内存；</li>
 </ol>
-<h2 id="内存的分代与回收策略"><a href="#内存的分代与回收策略" class="headerlink" title="内存的分代与回收策略"></a>内存的分代与回收策略</h2><p><img src="/images/java_memory_area_gc.jpeg"></p>
-<p>在具体实现上，JVM 将需要进行垃圾回收的区域分为 3 类：新生代（Young Generation）、老年代(Old Generation)、永久代(Permanent Generation)。其中新生代又分为 Eden 和 Survival（S0、S1）。具体结构如下：<br><img src="/images/JVM-Runtime-Data-Area.jpeg"></p>
+<h2 id="内存的分代与回收策略"><a href="#内存的分代与回收策略" class="headerlink" title="内存的分代与回收策略"></a>内存的分代与回收策略</h2><p><img src="/images/java_memory_area_gc.png"></p>
+<p>在具体实现上，JVM 将需要进行垃圾回收的区域分为 3 类：新生代（Young Generation）、老年代(Old Generation)、永久代(Permanent Generation)。其中新生代又分为 Eden 和 Survival（S0、S1）。具体结构如下：<br><img src="/images/JVM-Runtime-Data-Area.png"></p>
 <ul>
 <li><strong>新生代</strong> 大多数新创建的对象都分配在这里，由于大多数的对象很快会变得不可达，因此很多对象会在这里创建并迅速消失，当对象从新生代消失的时候，我们说一个”monior GC“发生了。</li>
 <li><strong>老年代</strong> 新生代中仍然可达并且在 monor GC 中生存下来的对象会被拷贝到这里，大致上来说它会比新生代大，这里的回收发生的频率比较低，当对象从老年代消失的时候，一个”major GC“或者说”full GC”发生了。</li>
