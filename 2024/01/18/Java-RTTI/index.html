@@ -13,7 +13,7 @@
 
 
 
-<title>Java ConcurrentHashMap | 千越</title>
+<title>Java RTTI | 千越</title>
 
 
 
@@ -200,7 +200,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Java ConcurrentHashMap</h1>
+            <h1 class="post-title">Java RTTI</h1>
             
                 <div class="post-meta">
                     
@@ -209,21 +209,48 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">2024-01-18&nbsp;&nbsp;12:19:22</a>
+                        Date: <a href="#">2024-01-18&nbsp;&nbsp;12:38:38</a>
                         </span>
                     
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%E6%8A%80%E6%9C%AF/">技术</a>
+                            
+                        </span>
                     
                 </div>
             
         </header>
 
         <div class="post-content">
-            <p>在 JDK1.5～1.7 版本，Java 使用了分段锁机制实现 <code>ConcurrentHashMap</code>。简而言之，<code>ConcurrentHashMap</code> 在对象中保存了一个 <code>Segment</code> 数组，即将整个 Hash 表划分为多个分段；而每个 <code>Segment</code> 元素，即每个分段则类似于一个 <code>Hashtable</code>；这样，在执行 <code>put</code> 操作时首先根据 hash 算法定位到元素属于哪个 <code>Segment</code>，然后对该 <code>Segment</code> 加锁即可。因此，<code>ConcurrentHashMap</code> 在多线程并发编程中可是实现多线程 put 操作。<br><img src="/images/java_concurrent_concurrenthashmap.jpeg"></p>
-<p><code>Segment</code> 数目默认是 16，所以理论上最多可以同时支持 16 个线程并发写，只要它们的操作分别分布在不同的 Segment 上。这个值可以在初始化的时候设置为其他值，但是一旦初始化以后，它是不可以扩容的。</p>
-<p>在 JDK1.7 之前，<code>ConcurrentHashMap</code> 是通过分段锁机制来实现的，所以其最大并发度受 <code>Segment</code> 的个数限制。因此，在 JDK1.8 <code>中，ConcurrentHashMap</code> 的实现原理取消了 <code>Segment</code> 分段锁，而是选择了与 HashMap 类似的**数组+链表+红黑树(当链表长度大于8时，链表结构转为红黑二叉树)**的方式实现，而加锁则采用 CAS 和 synchronized 实现。<br><img src="/images/java_concurrent_concurrenthashmap8.jpeg"></p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ol>
-<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/java/thread/java-thread-x-juc-collection-ConcurrentHashMap.html">ConcurrentHashMap 详解</a></li>
+            <p>RTTI（Run-Time Type Information），通过运行时类型信息程序能够使用基类的指针或引用来检查这些指针或引用所指的对象的实际派生类型，即运行时对象的具体类型是确定的（这包括 instanceof， isAssignableFrom，cast 等一系列操作）。比如在多态下，有时候我们需要确认某个引用实际的类型从而作出个性化的行为，这就需要 RTTI。</p>
+<p>Java 的 RTTI 是通过 Class 类来实现的。程序中的每一个类都有一个 Class 对象，现实中表现为 <code>.class</code> 文件，为了创建类的实例，Java 虚拟机会使用 ClassLoader，即类加载器。</p>
+<h1 id="Class-获取方式"><a href="#Class-获取方式" class="headerlink" title="Class 获取方式"></a>Class 获取方式</h1><p>任何时候你想要使用 RTTI，则必须获得一个 Class 对象：</p>
+<ol>
+<li>所有的类都会在第一次被引用到 static 成员时被动态加载到 JVM 中（不是一次加载）（构造函数虽然没有 static 修饰符，但实际上也是 static 的，静态变量、静态代码块就是在这个时候执行）；</li>
+<li><code>Class.forName(className)</code>；</li>
+<li><code>AClass.class</code> —— 有编译器检查，更安全也更加高效，并且这种方式并不会初始化 Class 对象（实战支持这个结论）；</li>
 </ol>
+<p>从类的加载到初始化实际上有以下三个步骤：</p>
+<ol>
+<li>加载。类加载器加载字节码，并从字节码创建 class 对象；</li>
+<li>链接。这个阶段会验证类中的字节码，为它分配静态存储空间，如果有必要，会解析所有对其他类的引用；</li>
+<li>初始化。如果有父类，初始化它，执行静态初始化代码（属性和代码块）；</li>
+</ol>
+<p>初始化会一直延迟到第一次引用 static 方法或者静态非常量变量。所以 <code>AClass.class</code> 方法并不是不加载类，只是初始化这一步不执行。初始化这一步会尽可能的晚。如果一个属性在编译时就定为 <code>static final</code> 类型的，则可以不用初始化类就获得 value，但是 <code>static final</code> 并不能保证一定会这样，因为 <code>static final</code> 属性还可以这样赋值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">staticFinal2</span> <span class="operator">=</span> ClassInitialization.rand.nextInt(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<p>这种情况下就必须初始化才行，因为它不是 compile-time 常量。</p>
+<h1 id="RTTI-方法和应用"><a href="#RTTI-方法和应用" class="headerlink" title="RTTI 方法和应用"></a>RTTI 方法和应用</h1><p>Class 类有很多有趣的 RTTI 方法，比如检测是否是一个接口，获取该类实现的接口，使用 <code>newInstance()</code> 方法实例化（类必须有一个默认构造函数，否则会抛出 <code>InstantiationException</code> 异常，如果默认构造函数是 <code>private</code> 的，则会抛出 <code>IllegalAccessException</code> 异常），返回值是一个不确定的 type，因此只能使用 Object 引用。</p>
+<h2 id="检查类型"><a href="#检查类型" class="headerlink" title="检查类型"></a>检查类型</h2><p>可以这样强转:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;House&gt; houseType = House.class;</span><br><span class="line"><span class="type">House</span> <span class="variable">h</span> <span class="operator">=</span> houseType.cast(b);</span><br></pre></td></tr></table></figure>
+<p><code>instanceof</code> 会考虑到继承情况，而 Class 的 &#x3D;&#x3D; 则不会。（注意，判断 class 是否一致应该使用 &#x3D;&#x3D;，因为 Class 的实例在一个虚拟机上只有一份）<br><code>instanceof</code> 针对实例，<code>isAssignableFrom</code> 针对 class 对象，它是用来判断一个类 Class1 和另一个类 Class2 是否相同或是另一个类的超类或接口，即：<code>baseType.isAssignableFrom(type)</code>。</p>
+<h1 id="与反射的关系"><a href="#与反射的关系" class="headerlink" title="与反射的关系"></a>与反射的关系</h1><p><strong>RTTI 其实不是 Java 的概念，而是 C++ 的，RTTI 和反射是两个不同体系在描述同一件事情。</strong> 一般不要认为 Java 的反射就是指 <code>java.lang.reflect</code> 这个包提供的工具类和接口。其实 Java 的整个对象类型系统，包括所有类的始祖类 Object 类以及每个对象都附带的 Class 对象，都是反射机制的一部分。</p>
+<blockquote>
+<p>维基百科：<br>In computing, type introspection is the ability of a program to examine the type or properties of an object at runtime. Some programming languages possess this capability.（在计算机中，内省是一种在运行时检测对象类型或者属性的能力，一些编程语言拥有这种能力）</p>
+<p>Introspection should not be confused with reflection, which goes a step further and is the ability for a program to manipulate the values, meta-data, properties and&#x2F;or functions of an object at runtime. Some programming languages - e.g. Java, Python and Go - also possess that capability.（内省不应该和反射混淆起来，反射更为强大，可以在运行时修改操纵对象的值，元数据，属性甚至方法，一些编程语言，比如 Java，Python 和 Go 语言拥有这种能力）</p>
+</blockquote>
 
         </div>
 
@@ -238,7 +265,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://qianyuebits.github.io/2024/01/18/Java-ConcurrentHashMap/">https://qianyuebits.github.io/2024/01/18/Java-ConcurrentHashMap/</a></span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/18/Java-RTTI/">https://qianyuebits.github.io/2024/01/18/Java-RTTI/</a></span>
                     </p>
                 
                 
@@ -270,10 +297,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/01/18/Java-RTTI/">Java RTTI</a>
+                <a class="prev" rel="prev" href="/2024/01/18/Java-Dynamic-Proxy/">Java Dynamic Proxy</a>
             
             
-            <a class="next" rel="next" href="/2024/01/18/Java-Generics/">Java 泛型</a>
+            <a class="next" rel="next" href="/2024/01/18/Java-ConcurrentHashMap/">Java ConcurrentHashMap</a>
             
         </section>
 
