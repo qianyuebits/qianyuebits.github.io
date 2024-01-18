@@ -219,25 +219,29 @@
 
         <div class="post-content">
             <p><strong>Service 是一种可在后台执行长时间运行的操作的应用组件。不提供界面。</strong> 启动后，即使用户切换到其他应用，服务也可能会继续运行一段时间。此外，组件可以绑定到服务以与其交互，甚至可以执行进程间通信 (IPC)。例如，服务可以在后台处理网络事务、播放音乐、执行文件 I&#x2F;O 或与 content provider 交互。</p>
-<blockquote>
-<p>注意：服务在其托管进程的主线程中运行；除非另行指定，否则该服务不会创建自己的线程，也不会在单独的进程中运行。您应在服务内的单独线程上运行任何阻塞操作，以避免应用无响应 (ANR) 错误。</p>
-</blockquote>
-<h1 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h1><p><img src="/images/android_service_lifecycle.png"><br>It’s important that your application stops its services when it’s done working, to avoid wasting system resources and consuming battery power. If necessary, other components can stop the service by calling stopService(). Even if you enable binding for the service, you must always stop the service yourself if it ever received a call to onStartCommand().</p>
-<p>To avoid this problem, you can use stopSelf(int) to ensure that your request to stop the service is always based on the most recent start request. That is, when you call stopSelf(int), you pass the ID of the start request (the startId delivered to onStartCommand()) to which your stop request corresponds. Then if the service received a new start request before you were able to call stopSelf(int), then the ID will not match and the service will not stop.</p>
-<blockquote>
+<p><strong>注意：服务在其托管进程的主线程中运行；除非另行指定，否则该服务不会创建自己的线程，也不会在单独的进程中运行。您应在服务内的单独线程上运行任何阻塞操作，以避免应用无响应 (ANR) 错误。</strong></p>
+<h1 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h1><p><img src="/images/android_service_lifecycle.png"><br>It’s important that your application stops its services when it’s done working, to avoid wasting system resources and consuming battery power. If necessary, other components can stop the service by calling <code>stopService()</code>. Even if you enable binding for the service, you must always stop the service yourself if it ever received a call to <code>onStartCommand()</code>.</p>
+<p>To avoid this problem, you can use <code>stopSelf(int)</code> to ensure that your request to stop the service is always based on the most recent start request. That is, when you call stopSelf(int), you pass the ID of the start request (the startId delivered to <code>onStartCommand()</code>) to which your stop request corresponds. Then if the service received a new start request before you were able to call stopSelf(int), then the ID will not match and the service will not stop.</p>
 <p>这一段写的非常重要，有几个重要信息：</p>
 <ol>
 <li><code>startService()</code> 可以调用多次，但是只需要调用一次 <code>stopService()</code> 即可关闭；</li>
 <li>一般来说，如果是耗时任务，我们会在 Service 内部开启线程去处理请求，如果我们先后提交两个任务 A 和 B，如果提交 A 之后我们开启独立线程去处理，A 在处理完成之后应该如何去判断是否要调用 <code>stopService()</code> 呢？如果调用，那么提交 B 的时候可能又会重新创建，造成资源浪费，或者 B 也开了线程正在处理过程中，这样反而由 Service 退化成了 Thread，并且内存泄漏了 Service。这里提供了解决方案：使用 <code>stopSelf(int)</code>：如果有新的任务提交上来，就更改 <code>startId</code>，那么调用这个方法会无效（注意，Service 运行在主线程）。</li>
 </ol>
-<p>针对问题 2，使用 IntentService，设计最为合理。</p>
+<blockquote>
+<p>针对问题 2，使用 <code>IntentService</code>，设计最为合理。</p>
 </blockquote>
 <p><img src="/images/android_service_binding_tree_lifecycle.png"><br>这幅图说的很清晰：</p>
 <ol>
 <li>如果有 start 操作，想要停止，必须调用 stop；</li>
 <li>如果有 bind 操作，必须有对应的 unbind 操作，大家都 unbind 之后，才可能销毁服务；</li>
 </ol>
-<h1 id="Service-VS-Thread"><a href="#Service-VS-Thread" class="headerlink" title="Service VS Thread"></a>Service VS Thread</h1><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>两者都能在后台运行，执行耗时的任务。这个后台是指无 UI 的情况。</p>
+<p>这两条路径并非完全独立。您可以绑定到已使用 <code>startService()</code> 启动的服务。例如，您可以启动后台音乐服务，方法是使用用于标识要播放的音乐的 Intent 调用 <code>startService()</code>。稍后，当用户想要对播放器进行某种控制或获取有关当前歌曲的信息时，activity 可以通过调用 <code>bindService()</code> 绑定到该服务。在这种情况下，在所有客户端取消绑定之前，<code>stopService()</code> 或 <code>stopSelf()</code> 实际上不会停止服务。</p>
+<h1 id="服务种类"><a href="#服务种类" class="headerlink" title="服务种类"></a>服务种类</h1><ol>
+<li><strong>前台服务</strong> 执行一些用户可察觉到的操作。例如，音频应用将使用前台服务来播放音轨。前台服务必须显示 Notification。即使用户没有与应用互动，前台服务也会继续运行。使用前台服务时，您必须显示通知，让用户主动知晓服务正在运行。除非服务停止或从前台移除，否则无法关闭此通知。</li>
+<li><strong>后台服务</strong> 执行用户不会直接注意到的操作。例如，如果应用使用服务来压缩其存储空间，则该服务通常是后台服务。</li>
+<li><strong>绑定服务</strong> 当应用组件通过调用 <code>bindService()</code> 绑定到服务时，服务即处于绑定状态。绑定服务提供了一个客户端-服务器接口，该接口允许组件与服务进行交互、发送请求、接收结果，甚至使用进程间通信 (IPC) 跨进程执行这些操作。仅当与另一个应用组件绑定时，绑定服务才会运行。多个组件可以同时绑定到该服务，但全部取消绑定后，该服务即会被销毁。</li>
+</ol>
+<h1 id="Service-VS-Thread"><a href="#Service-VS-Thread" class="headerlink" title="Service VS Thread"></a>Service VS Thread</h1><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>两者都能在后台运行，执行耗时的任务。</p>
 <h2 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h2><ol>
 <li>Service 有 Context，而 Thread 依赖外部传入。感觉上而言，Service 更像是应用中的一个缩小部分，这符合四大组件的定义；</li>
 <li>Service 可以独立开进程；</li>
@@ -246,16 +250,19 @@
 <li>可以提高所在进程的优先级；</li>
 </ol>
 <p>四大组件其实都是这种概念，任何一个组件都有自己的 Context，可以各自执行自己的任务。<br>另外注意：Service 和 Thread 并不是同级关系，甚至不存在比较意义，原因如下：Service 的异步任务其实就是使用 Thread 来实现的。</p>
+<blockquote>
 <p>Note that services, like other application objects, run in the main thread of their hosting process. This means that, if your service is going to do any CPU intensive (such as MP3 playback) or blocking (such as networking) operations, it should spawn its own thread in which to do that work. The IntentService class is available as a standard implementation of Service that has its own thread where it schedules its work to be done.</p>
+</blockquote>
 <p>Service 既不是独立的进程也不是独立的线程，要实现这种效果，必须自己手动配置。因此 Service 只提供两种特性：<br>1）显式地告诉系统，有一段任务想要在后台执行，与 <code>startService()</code> 函数目的一致；<br>2）暴露一段功能给外部应用使用，与 <code>bindService()</code> 函数目的一致；</p>
 <p>文档上说，当创建一个 Service 的实例之后，Service 只是调用了 <code>onCreate()</code> 方法，以及调用了主线程上的相关回调。</p>
-<h3 id="杀死的优先级"><a href="#杀死的优先级" class="headerlink" title="杀死的优先级"></a>杀死的优先级</h3><p>The Android system will force-stop a service only when memory is low and it must recover system resources for the activity that has user focus. If the service is bound to an activity that has user focus, then it’s less likely to be killed, and if the service is declared to run in the foreground (discussed later), then it will almost never be killed. Otherwise, if the service was started and is long-running, then the system will lower its position in the list of background tasks over time and the service will become highly susceptible to killing—if your service is started, then you must design it to gracefully handle restarts by the system. If the system kills your service, it restarts it as soon as resources become available again (though this also depends on the value you return from onStartCommand(), as discussed later).</p>
-<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>为了防止其余 App 意外调用自己的 Service 以及自己的 App 意外调用别人的 Service，Service 的启动需要用显示调用，而不要声明任何的 intent-filter，如果实在必要，则也需要在 Intent 中使用 setPackage() 方法，总之，要缩小歧义性。最后，可以将 exported 设置为false来阻止别的 App 调用自己的 Service；</p>
+<h3 id="杀死的优先级"><a href="#杀死的优先级" class="headerlink" title="杀死的优先级"></a>杀死的优先级</h3><p>The Android system will force-stop a service only when memory is low and it must recover system resources for the activity that has user focus. <strong>If the service is bound to an activity that has user focus, then it’s less likely to be killed, and if the service is declared to run in the foreground (discussed later), then it will almost never be killed.</strong> Otherwise, if the service was started and is long-running, then the system will lower its position in the list of background tasks over time and the service will become highly susceptible to killing—if your service is started, then you must design it to gracefully handle restarts by the system. If the system kills your service, it restarts it as soon as resources become available again (though this also depends on the value you return from onStartCommand(), as discussed later).</p>
+<p>翻译：只有当内存不足，必须为用户关注的活动恢复系统资源时，Android 系统才会强制停止服务。如果服务与用户关注的活动绑定，那么它就不太可能被杀死，如果服务被声明为在前台运行（稍后讨论），那么它几乎永远不会被杀死。否则，如果服务已启动并长期运行，那么随着时间的推移，系统将降低其在后台任务列表中的位置，服务将变得非常容易被杀死–如果服务已启动，那么你必须设计它来从容应对系统的重启。如果系统杀死了您的服务，它会在资源恢复可用后立即重新启动（不过这也取决于您从 <code>onStartCommand()</code> 返回的值，这将在后面讨论）。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>为了防止其余 App 意外调用自己的 Service 以及自己的 App 意外调用别人的 Service，Service 的启动需要用显示调用，而不要声明任何的 <code>intent-filter</code>，如果实在必要，则也需要在 Intent 中使用 <code>setPackage()</code> 方法，总之，要缩小歧义性。最后，可以将 exported 设置为 false 来阻止别的 App 调用自己的 Service。</p>
 <h1 id="常见操作"><a href="#常见操作" class="headerlink" title="常见操作"></a>常见操作</h1><h2 id="关于-startService-之后如何拿到运行结果"><a href="#关于-startService-之后如何拿到运行结果" class="headerlink" title="关于 startService() 之后如何拿到运行结果"></a>关于 <code>startService()</code> 之后如何拿到运行结果</h2><p>If the service does not also provide binding, the intent delivered with startService() is the only mode of communication between the application component and the service. However, if you want the service to send a result back, then the client that starts the service can create a PendingIntent for a broadcast (with getBroadcast()) and deliver it to the service in the Intent that starts the service. The service can then use the broadcast to deliver a result.<br><strong>Multiple requests to start the service result in multiple corresponding calls to the service’s onStartCommand(). However, only one request to stop the service (with stopSelf() or stopService()) is required to stop it.</strong></p>
-<h2 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h2><ol>
-<li>如果只是单进程内部调用，则使用 bindService() 即可；</li>
+<h1 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h1><ol>
+<li>如果只是单进程内部调用，则使用 <code>bindService()</code> 即可；</li>
 <li>如果是在多进程内进行服务调用，并且服务只需要单线程处理请求，则使用 Messenger 即可；</li>
-<li>如果服务是多线程调用 &amp; 并行处理请求，则用 AIDL；<br>PS：其实 Messenger 也完全可以用于代替 AIDL，Messenger在处理消息的时候可以使用线程并发</li>
+<li>如果服务是多线程调用 &amp; 并行处理请求，则用 AIDL；<br>PS：其实 Messenger 也完全可以用于代替 AIDL，Messenger 在处理消息的时候可以使用线程并发</li>
 </ol>
 <p>本地进程和远程进程执行 AIDL 的区别：</p>
 <ol>
@@ -263,7 +270,7 @@
 <li>远程进程调用则会被本地进程的线程池（系统维护）分发，这种情况下，有可能产生并发，AIDL 接口则必须保证线程安全；</li>
 </ol>
 <p>进程间通信的接口必须通过 AIDL 进行定义，包括 Client 对 Service 的调用以及 Service 对 Client 的回调。</p>
-<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>如果 Activity 绑定 Service 之后，不解绑就退出，会报连接泄漏错误。所以务必正确配对 bind 和 unbind 的方法（不正确 unbind 的情况就不需要深入分析了）。</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>如果 Activity 绑定 Service 之后，不解绑就退出，会报连接泄漏错误。所以务必正确配对 bind 和 unbind 的方法（不正确 unbind 的情况就不需要深入分析了）。</p>
 
         </div>
 
