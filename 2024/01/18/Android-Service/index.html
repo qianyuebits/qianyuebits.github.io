@@ -222,14 +222,7 @@
 <p><strong>注意：服务在其托管进程的主线程中运行；除非另行指定，否则该服务不会创建自己的线程，也不会在单独的进程中运行。您应在服务内的单独线程上运行任何阻塞操作，以避免应用无响应 (ANR) 错误。</strong></p>
 <h1 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h1><p><img src="/images/android_service_lifecycle.png"><br>It’s important that your application stops its services when it’s done working, to avoid wasting system resources and consuming battery power. If necessary, other components can stop the service by calling <code>stopService()</code>. Even if you enable binding for the service, you must always stop the service yourself if it ever received a call to <code>onStartCommand()</code>.</p>
 <p>To avoid this problem, you can use <code>stopSelf(int)</code> to ensure that your request to stop the service is always based on the most recent start request. That is, when you call stopSelf(int), you pass the ID of the start request (the startId delivered to <code>onStartCommand()</code>) to which your stop request corresponds. Then if the service received a new start request before you were able to call stopSelf(int), then the ID will not match and the service will not stop.</p>
-<p>这一段写的非常重要，有几个重要信息：</p>
-<ol>
-<li><code>startService()</code> 可以调用多次，但是只需要调用一次 <code>stopService()</code> 即可关闭；</li>
-<li>一般来说，如果是耗时任务，我们会在 Service 内部开启线程去处理请求，如果我们先后提交两个任务 A 和 B，如果提交 A 之后我们开启独立线程去处理，A 在处理完成之后应该如何去判断是否要调用 <code>stopService()</code> 呢？如果调用，那么提交 B 的时候可能又会重新创建，造成资源浪费，或者 B 也开了线程正在处理过程中，这样反而由 Service 退化成了 Thread，并且内存泄漏了 Service。这里提供了解决方案：使用 <code>stopSelf(int)</code>：如果有新的任务提交上来，就更改 <code>startId</code>，那么调用这个方法会无效（注意，Service 运行在主线程）。</li>
-</ol>
-<blockquote>
-<p>针对问题 2，使用 <code>IntentService</code>，设计最为合理。</p>
-</blockquote>
+<p><code>startService()</code> 可以调用多次（会多次执行 <code>onstartCommand()</code>），但是只需要调用一次 <code>stopService()</code> 即可关闭。</p>
 <p><img src="/images/android_service_binding_tree_lifecycle.png"><br>这幅图说的很清晰：</p>
 <ol>
 <li>如果有 start 操作，想要停止，必须调用 stop；</li>
@@ -312,6 +305,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/01/18/Android-Activity-Lifecycle/">Android Activity Lifecycle</a>
             
             
             <a class="next" rel="next" href="/2024/01/18/Java-MISC/">Java 琐事</a>
