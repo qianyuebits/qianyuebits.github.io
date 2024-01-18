@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="千越">
+
+
+
+
+
+<title>Android Service | 千越</title>
+
+
+
+    <link rel="icon" href="/image/icon.jpeg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">千越的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">千越的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android Service</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2024-01-18&nbsp;&nbsp;14:48:19</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>Service 是一种可在后台执行长时间运行的操作的应用组件。不提供界面。</strong> 启动后，即使用户切换到其他应用，服务也可能会继续运行一段时间。此外，组件可以绑定到服务以与其交互，甚至可以执行进程间通信 (IPC)。例如，服务可以在后台处理网络事务、播放音乐、执行文件 I&#x2F;O 或与 content provider 交互。</p>
+<blockquote>
+<p>注意：服务在其托管进程的主线程中运行；除非另行指定，否则该服务不会创建自己的线程，也不会在单独的进程中运行。您应在服务内的单独线程上运行任何阻塞操作，以避免应用无响应 (ANR) 错误。</p>
+</blockquote>
+<h1 id="生命周期管理"><a href="#生命周期管理" class="headerlink" title="生命周期管理"></a>生命周期管理</h1><p><img src="/images/android_service_lifecycle.png"><br>It’s important that your application stops its services when it’s done working, to avoid wasting system resources and consuming battery power. If necessary, other components can stop the service by calling stopService(). Even if you enable binding for the service, you must always stop the service yourself if it ever received a call to onStartCommand().</p>
+<p>To avoid this problem, you can use stopSelf(int) to ensure that your request to stop the service is always based on the most recent start request. That is, when you call stopSelf(int), you pass the ID of the start request (the startId delivered to onStartCommand()) to which your stop request corresponds. Then if the service received a new start request before you were able to call stopSelf(int), then the ID will not match and the service will not stop.</p>
+<blockquote>
+<p>这一段写的非常重要，有几个重要信息：</p>
+<ol>
+<li><code>startService()</code> 可以调用多次，但是只需要调用一次 <code>stopService()</code> 即可关闭；</li>
+<li>一般来说，如果是耗时任务，我们会在 Service 内部开启线程去处理请求，如果我们先后提交两个任务 A 和 B，如果提交 A 之后我们开启独立线程去处理，A 在处理完成之后应该如何去判断是否要调用 <code>stopService()</code> 呢？如果调用，那么提交 B 的时候可能又会重新创建，造成资源浪费，或者 B 也开了线程正在处理过程中，这样反而由 Service 退化成了 Thread，并且内存泄漏了 Service。这里提供了解决方案：使用 <code>stopSelf(int)</code>：如果有新的任务提交上来，就更改 <code>startId</code>，那么调用这个方法会无效（注意，Service 运行在主线程）。</li>
+</ol>
+<p>针对问题 2，使用 IntentService，设计最为合理。</p>
+</blockquote>
+<p><img src="/images/android_service_binding_tree_lifecycle.png"><br>这幅图说的很清晰：</p>
+<ol>
+<li>如果有 start 操作，想要停止，必须调用 stop；</li>
+<li>如果有 bind 操作，必须有对应的 unbind 操作，大家都 unbind 之后，才可能销毁服务；</li>
+</ol>
+<h1 id="Service-VS-Thread"><a href="#Service-VS-Thread" class="headerlink" title="Service VS Thread"></a>Service VS Thread</h1><h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><p>两者都能在后台运行，执行耗时的任务。这个后台是指无 UI 的情况。</p>
+<h2 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h2><ol>
+<li>Service 有 Context，而 Thread 依赖外部传入。感觉上而言，Service 更像是应用中的一个缩小部分，这符合四大组件的定义；</li>
+<li>Service 可以独立开进程；</li>
+<li>可以暴露服务给三方应用；</li>
+<li>自带恢复机制；</li>
+<li>可以提高所在进程的优先级；</li>
+</ol>
+<p>四大组件其实都是这种概念，任何一个组件都有自己的 Context，可以各自执行自己的任务。<br>另外注意：Service 和 Thread 并不是同级关系，甚至不存在比较意义，原因如下：Service 的异步任务其实就是使用 Thread 来实现的。</p>
+<p>Note that services, like other application objects, run in the main thread of their hosting process. This means that, if your service is going to do any CPU intensive (such as MP3 playback) or blocking (such as networking) operations, it should spawn its own thread in which to do that work. The IntentService class is available as a standard implementation of Service that has its own thread where it schedules its work to be done.</p>
+<p>Service 既不是独立的进程也不是独立的线程，要实现这种效果，必须自己手动配置。因此 Service 只提供两种特性：<br>1）显式地告诉系统，有一段任务想要在后台执行，与 <code>startService()</code> 函数目的一致；<br>2）暴露一段功能给外部应用使用，与 <code>bindService()</code> 函数目的一致；</p>
+<p>文档上说，当创建一个 Service 的实例之后，Service 只是调用了 <code>onCreate()</code> 方法，以及调用了主线程上的相关回调。</p>
+<h3 id="杀死的优先级"><a href="#杀死的优先级" class="headerlink" title="杀死的优先级"></a>杀死的优先级</h3><p>The Android system will force-stop a service only when memory is low and it must recover system resources for the activity that has user focus. If the service is bound to an activity that has user focus, then it’s less likely to be killed, and if the service is declared to run in the foreground (discussed later), then it will almost never be killed. Otherwise, if the service was started and is long-running, then the system will lower its position in the list of background tasks over time and the service will become highly susceptible to killing—if your service is started, then you must design it to gracefully handle restarts by the system. If the system kills your service, it restarts it as soon as resources become available again (though this also depends on the value you return from onStartCommand(), as discussed later).</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>为了防止其余 App 意外调用自己的 Service 以及自己的 App 意外调用别人的 Service，Service 的启动需要用显示调用，而不要声明任何的 intent-filter，如果实在必要，则也需要在 Intent 中使用 setPackage() 方法，总之，要缩小歧义性。最后，可以将 exported 设置为false来阻止别的 App 调用自己的 Service；</p>
+<h1 id="常见操作"><a href="#常见操作" class="headerlink" title="常见操作"></a>常见操作</h1><h2 id="关于-startService-之后如何拿到运行结果"><a href="#关于-startService-之后如何拿到运行结果" class="headerlink" title="关于 startService() 之后如何拿到运行结果"></a>关于 <code>startService()</code> 之后如何拿到运行结果</h2><p>If the service does not also provide binding, the intent delivered with startService() is the only mode of communication between the application component and the service. However, if you want the service to send a result back, then the client that starts the service can create a PendingIntent for a broadcast (with getBroadcast()) and deliver it to the service in the Intent that starts the service. The service can then use the broadcast to deliver a result.<br><strong>Multiple requests to start the service result in multiple corresponding calls to the service’s onStartCommand(). However, only one request to stop the service (with stopSelf() or stopService()) is required to stop it.</strong></p>
+<h2 id="AIDL"><a href="#AIDL" class="headerlink" title="AIDL"></a>AIDL</h2><ol>
+<li>如果只是单进程内部调用，则使用 bindService() 即可；</li>
+<li>如果是在多进程内进行服务调用，并且服务只需要单线程处理请求，则使用 Messenger 即可；</li>
+<li>如果服务是多线程调用 &amp; 并行处理请求，则用 AIDL；<br>PS：其实 Messenger 也完全可以用于代替 AIDL，Messenger在处理消息的时候可以使用线程并发</li>
+</ol>
+<p>本地进程和远程进程执行 AIDL 的区别：</p>
+<ol>
+<li>本地进程在调用线程中直接执行 AIDL 函数；</li>
+<li>远程进程调用则会被本地进程的线程池（系统维护）分发，这种情况下，有可能产生并发，AIDL 接口则必须保证线程安全；</li>
+</ol>
+<p>进程间通信的接口必须通过 AIDL 进行定义，包括 Client 对 Service 的调用以及 Service 对 Client 的回调。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>如果 Activity 绑定 Service 之后，不解绑就退出，会报连接泄漏错误。所以务必正确配对 bind 和 unbind 的方法（不正确 unbind 的情况就不需要深入分析了）。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/18/Android-Service/">https://qianyuebits.github.io/2024/01/18/Android-Service/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2024/01/18/Java-MISC/">Java 琐事</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 千越 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
