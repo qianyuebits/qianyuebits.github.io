@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Methods/</loc>
+    <lastmod>2024-01-18</lastmod>
+  </url>
+  <url>
+    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Programming/</loc>
+    <lastmod>2024-01-18</lastmod>
+  </url>
+  <url>
+    <loc>https://qianyuebits.github.io/2014/05/25/Android-Handler/</loc>
+    <lastmod>2024-01-18</lastmod>
+  </url>
+  <url>
+    <loc>https://qianyuebits.github.io/2014/05/25/Java-ThreadLocal/</loc>
+    <lastmod>2024-01-18</lastmod>
+  </url>
+  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Java-ConcurrentHashMap/</loc>
     <lastmod>2024-01-18</lastmod>
   </url>
@@ -33,10 +49,6 @@
     <lastmod>2024-01-18</lastmod>
   </url>
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Condition/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/17/JMM/</loc>
     <lastmod>2024-01-17</lastmod>
   </url>
@@ -45,43 +57,11 @@
     <lastmod>2024-01-17</lastmod>
   </url>
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-ThreadLocal/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-State/</loc>
     <lastmod>2024-01-17</lastmod>
   </url>
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Semaphore/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Methods/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-ReadWriteLock/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-FutureTask/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-CyclicBarrier/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-CountDownLatch/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-Concept/</loc>
-    <lastmod>2024-01-17</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-CompletionService/</loc>
     <lastmod>2024-01-17</lastmod>
   </url>
   <url>
