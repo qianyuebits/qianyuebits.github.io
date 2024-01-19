@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="千越">
+
+
+
+
+
+<title>Java 内部类 | 千越</title>
+
+
+
+    <link rel="icon" href="/image/icon.jpeg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">千越的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">千越的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java 内部类</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2024-01-18&nbsp;&nbsp;13:30:22</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%E6%8A%80%E6%9C%AF/">技术</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>内部类分为匿名内部类和非匿名内部类。非匿名内部类分为静态内部类和非静态内部类（又称为 <code>Nested classes</code>，嵌套类）。</p>
+<p>非静态内部类对外部类持有引用，因此不能单独实例化。只有先实例化外部类，才能实例化外部类中的内部类。语法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DotNew</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Inner</span> &#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">DotNew</span> <span class="variable">dn</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DotNew</span>();</span><br><span class="line">        DotNew.<span class="type">Inner</span> <span class="variable">dni</span> <span class="operator">=</span> dn.<span class="keyword">new</span> <span class="title class_">Inner</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果用<code>外部类.内部类</code>的方式实例化内部类，则提示：No enclosing instance of type Hello is accessible. Must qualify the allocation with an enclosing instance of type Hello。<strong>如果通过这种方式实例化两个内部类的实例，则两个内部类都指向同一个外部类的实例。（静态内部类不存在这个问题，基本可以认为静态内部类和外部类没有什么关系，只是它放置的位置比较特殊。）</strong></p>
+<p>在内部类中可以使用 <code>OuterClass.this</code> 来返回外部类的实例引用。</p>
+<h1 id="嵌套类"><a href="#嵌套类" class="headerlink" title="嵌套类"></a>嵌套类</h1><p>即静态内部类，它意味着：<br>1）你不需要依赖外部类去构建内部类的实例；<br>2）你不能通过嵌套类的实例获取一个非静态的外部类的实例（表述有问题）；</p>
+<p>嵌套类和普通的内部类有所不同，普通内部类不能有静态属性、静态方法和嵌套类（ SOF 上大多数解释为因为普通内部类依赖于外部类的实例而创建，因此让普通内部类声明静态数据并没有意义）。但是嵌套类是可以的，但是嵌套类和外部类基本无关了，没有引用，没有 this 指针。</p>
+<p>在接口中不仅可以声明方法 API 或者变量，还可以有如下用法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ClassInInterface</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">howdy</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">implements</span> <span class="title class_">ClassInInterface</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">howdy</span><span class="params">()</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Howdy!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">         </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">Test</span>().howdy();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个类默认是 <code>public static</code> 的（注意，此时内部的变量不是 static 的）。</p>
+<h1 id="为什么要使用内部类"><a href="#为什么要使用内部类" class="headerlink" title="为什么要使用内部类"></a>为什么要使用内部类</h1><p>经典意义上，内部类可以作为外部类对外的一个窗口来使用。即如前面所说，可以暴露外部类的部分信息出去。另外一个个人觉得的用处是：临时声明一个辅助类，这个类只在外部类的环境中使用，外部不应该、也没有必要去知道这个类的存在。</p>
+<p>TIJ 中问了一个“切中核心”的问题：如果我们需要实现一个接口，既然内部类能实现，为什么不能直接让外部类实现？那么这两种有什么区别呢？问题在于有时候你并不是在和接口打交道，而是和实现打交道：<br>每一个内部类都能够独立继承一种实现，不用管外部类已经实现了什么。<br>换句话说，我们可以多继承了（一个类中集成多个类的功能）。如果你不需要解决多继承问题，则完全可以在没有内部类支持的情况下编码。</p>
+<p>使用内部类是有以下好处的：<br>1）每一个内部类都可以有多个实例，每个实例都有与外部类无关的内部信息（就像你有两个肾？）；<br>2）一个外部类可以有多个实现同一个接口或继承同一个基类的内部类（经典案例是迭代器：种类繁多且和外部类属性交互极多，如果使用外部类实现，会非常复杂并破坏封装性）；<br>3）不会有令人迷惑的“is-a”关系，它（内部类）是一个单独的实体；</p>
+<p>第三点其实非常关键，比如 <code>OnClickListener</code>，并且只能有一种 <code>OnClickListener</code>，赞。</p>
+<p>多继承本身就意味着单一职责原则的破坏？因此使用内部类会维持单一职责？</p>
+<p>TIJ 后面还讲述了一些其余的知识，比如内部类的继承等。但是正如 TIJ 中这一章开始的描述：这些是为了实现语言的完整性（类就一定会考虑到这些）。实际开发中不一定非得去使用，因为在易读性和维护性上可能存在缺陷。</p>
+<h1 id="给内部类用的变量为什么一定要-final-类型"><a href="#给内部类用的变量为什么一定要-final-类型" class="headerlink" title="给内部类用的变量为什么一定要 final 类型"></a>给内部类用的变量为什么一定要 final 类型</h1><p>首先理解一下闭包的概念：在计算机科学中，闭包（英语：Closure），又称词法闭包（Lexical Closure）或函数闭包（function closures），是引用了自由变量的函数。这个被引用的自由变量将和这个函数一同存在，即使已经离开了创造它的环境也不例外。所以，有另一种说法认为闭包是由函数和与其相关的引用环境组合而成的实体。闭包在运行时可以有多个实例，不同的引用环境和相同的函数组合可以产生不同的实例。</p>
+<blockquote>
+<p>内部类就是一个 OO 闭包，因为它不仅引用着创建环境的信息，它还引用着整个外部环境对象，并有权使用所有的外部环境数据。</p>
+</blockquote>
+<p>关于问题的解释：<br>It’s basically due to the way Java manages closures.</p>
+<p>When you create an instance of an anonymous inner class, any variables which are used within that class have their values copied in via the autogenerated constructor. This avoids the compiler having to autogenerate various extra types to hold the logical state of the “local variables”, as for example the C# compiler does… (When C# captures a variable in an anonymous function, it really captures the variable - the closure can update the variable in a way which is seen by the main body of the method, and vice versa.)</p>
+<p>As the value has been copied into the instance of the anonymous inner class, it would look odd if the variable could be modified by the rest of the method - you could have code which appeared to be working with an out-of-date variable (because that’s effectively what would be happening… you’d be working with a copy taken at a different time). Likewise if you could make changes within the anonymous inner class, developers might expect those changes to be visible within the body of the enclosing method.</p>
+<p>Making the variable final removes all these possibilities - as the value can’t be changed at all, you don’t need to worry about whether such changes will be visible. The only ways to allow the method and the anonymous inner class see each other’s changes is to use a mutable type of some description. This could be the enclosing class itself, an array, a mutable wrapper type… anything like that. Basically it’s a bit like communicating between one method and another: changes made to the parameters of one method aren’t seen by its caller, but changes made to the objects referred to by the parameters are seen.</p>
+<p><strong>简单来说：为了防止变量引用被修改，从而失去捕获的含义（不是一个快照或者和外部不同步）。</strong></p>
+<blockquote>
+<p>这里有一篇详细解释 C# 闭包的文章：<a target="_blank" rel="noopener" href="http://csharpindepth.com/Articles/Chapter5/Closures.aspx">http://csharpindepth.com/Articles/Chapter5/Closures.aspx</a></p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/18/Java-Inner-Class/">https://qianyuebits.github.io/2024/01/18/Java-Inner-Class/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/Java/"># Java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/01/18/Java-Exception/">Java Exception</a>
+            
+            
+            <a class="next" rel="next" href="/2024/01/18/Java-Dynamic-Proxy/">Java Dynamic Proxy</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 千越 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
