@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="千越">
+
+
+
+
+
+<title>Android Activity 启动模式 | 千越</title>
+
+
+
+    <link rel="icon" href="/image/icon.jpeg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">千越的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">千越的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android Activity 启动模式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2018-12-4&nbsp;&nbsp;21:34:00</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Activity 的加载模式受启动 Activity 的 Intent 对象中设置的 Flag 和 manifest 文件中 Activity 的 <code>&lt;activity&gt;</code> 元素的特性值交互控制。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(ReorderFour.<span class="built_in">this</span>, ReorderTwo.class);  </span><br><span class="line">intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);  </span><br><span class="line">startActivity(intent); </span><br></pre></td></tr></table></figure>
+
+<h1 id="LaunchMode"><a href="#LaunchMode" class="headerlink" title="LaunchMode"></a>LaunchMode</h1><p>Activity 的四种 LaunchMode：<code>standard</code>&#x2F;<code>singleTop</code>&#x2F;<code>singleTask</code>&#x2F;<code>singleInstance</code>。</p>
+<p>这些模式可分为两大类：”standard” 和 “singleTop” activity 为一类，”singleTask” “singleInstance” 和 “singleInstancePerTask” activity 为另一类。启动模式为 “standard” 或 “singleTop” 的 activity 可以多次实例化。实例可归属任何任务，并且可位于 activity 任务中的任何位置。通常，它们会启动到名为 <code>startActivity()</code> 的任务中。</p>
+<h2 id="standard"><a href="#standard" class="headerlink" title="standard"></a><code>standard</code></h2><p><strong>系统在启动该 Activity 的任务中创建 Activity 的新实例</strong>，并将 intent 传送给该实例。Activity 可以多次实例化，每个实例可以属于不同的任务，一个任务可以拥有多个实例。</p>
+<h2 id="singleTop"><a href="#singleTop" class="headerlink" title="singleTop"></a><code>singleTop</code></h2><p>如果当前任务的顶部已存在 Activity 的实例，则系统会通过调用其 <code>onNewIntent()</code> 方法来将 intent 转送给该实例，而不是创建 Activity 的新实例。Activity 可以多次实例化，每个实例可以属于不同的任务，一个任务可以拥有多个实例。</p>
+<h2 id="singleTask"><a href="#singleTask" class="headerlink" title="singleTask"></a><code>singleTask</code></h2><blockquote>
+<p>This mode is quite different from standard and singleTop. An Activity with singleTask launchMode is allowed to have only one instance in the system (a.k.a. Singleton). If there is an existed Activity instance in the system, the whole Task hold the instance would be moved to top while Intent would be delivered through onNewIntent() method. Otherwise, new Activity would be created and placed in the proper Task.</p>
+</blockquote>
+<p>以上这个极为重要：如果一个任务栈 M 里面已经有 A、B、C 三个页面， B 页面是 <code>singleTask</code> 的，那么在任务栈 N 里面启动 B（假设任务栈 N 里面有 X，Y 两个页面），那么启动之后，任务栈 N 里面会变成 X、Y、A、B。</p>
+<p>实践也验证了这一点，这表明在整个系统中，<code>singleTask</code> 的 Activity 也只会有一个。和 <code>singleInstance</code> 一样。</p>
+<blockquote>
+<p>实际上，<strong>只是系统把任务栈 M 调度为系统前台栈。</strong> 并没有把 M 和 N 合并为一个。</p>
+</blockquote>
+<p>如果应用 M 启动应用 N 的一个页面 A，这个页面没有设置 <code>singleTask</code> 启动模式，那么 A 就在 M 当前的任务栈内，如果 A 设置了 <code>singleTask</code> 属性，就会另外开启一个栈，此时如果应用 N 处于完全关闭状态，在 Launcher 上点击 N 的图标，就会展示出 A 页面，无论 A 是不是启动页。</p>
+<p>官方说明：系统会创建新任务，并实例化新任务的根 Activity。但是，如果另外的任务中已存在该 Activity 的实例，则系统会通过调用其 <code>onNewIntent()</code> 方法将 intent 转送到该现有实例，而不是创建新实例。Activity 一次只能有一个实例存在。</p>
+<h2 id="singleInstance"><a href="#singleInstance" class="headerlink" title="singleInstance"></a><code>singleInstance</code></h2><p>非常奇特又少用的一种模式，虽然说配置了这种模式的 Activity 是一定在一个单独栈里面的，但是如果你不设置 <code>taskAffinity</code> 属性，在任务栏里面就看不到这个单独的任务。</p>
+<p>假设有两个应用 M 和 N，分别有 A，B，C，D 和 X，Y 两个页面，其中 C 页面是 <code>singleInstance</code> 的。我们依次启动 A，B，C，D，再启动 X，Y，由 Y 再启动 C。这时候如果我们点击返回键，那么会从 C 返回到 Y，再点击返回到 X，再点击返回到 Laucher 页面，此时点击打开 M 应用的图标，会看到页面 D，点击返回看到 B，再点击返回看到 A，最后返回回到 Launcher 页面。&#x3D;&gt; 从现象上看，似乎是把 C 从 M 应用硬生生移动到了 N 应用中。</p>
+<p>官方说明：与 “singleTask” 相似，唯一不同的是系统不会将任何其他 Activity 启动到包含该实例的任务中。该 Activity 始终是其任务唯一的成员；由该 Activity 启动的任何 Activity 都会在其他的任务中打开。</p>
+<p>结合官方说明，C 始终在一个单独的 Task 中，因此还是 Task 的切换，且 C 在没有设置 <code>taskAffinity</code> 属性时，还是一个隐藏的 Task（桌面上看不到）。</p>
+<h1 id="TaskAffinity"><a href="#TaskAffinity" class="headerlink" title="TaskAffinity"></a>TaskAffinity</h1><p><code>taskAffinity</code> 是用来指示 Activity 属于哪一个 Task 的，<strong>默认情况下 Activity 的 <code>taskAffinity</code> 是包名</strong>，可以由 Application 或者 Activity 设置修改。</p>
+<p><code>taskAffinity</code> 属性主要和以下三种设置配合使用：</p>
+<ol>
+<li><code>singleTask</code> 启动模式；</li>
+<li><code>allowTaskReparenting</code> 属性；</li>
+<li><code>FLAG_ACTIVITY_NEW_TASK</code> Flag；</li>
+</ol>
+<p>在其他情况下没有意义。</p>
+<h2 id="singleTask-启动模式"><a href="#singleTask-启动模式" class="headerlink" title="singleTask 启动模式"></a><code>singleTask</code> 启动模式</h2><p>假设要启动的 Activity A 设置了该属性，这个属性控制的是当前 Task 只有一个 A，如果当前栈内已经有 A 的实例，会调用 A 的 <code>onNewIntent()</code> 方法，并将 A 上面的所有 Activity 实例弹出栈，如果当前栈内没有，则会直接新建一个。</p>
+<p>以上是针对的没有设置 <code>taskAffinity</code> 的情况。如果设置 <code>taskAffinity</code>，那么会看该 <code>taskAffinity</code> 表示的栈内有没有对应的 A 的实例，如果有，则会调用 A 的 <code>onNewIntent()</code> 方法，否则新建实例压入栈。</p>
+<p>系统会记录整个栈的切换情况。假设应用 M 有 A、B、C 三个页面，C 是独立设置了 <code>taskAffinity</code>，应用 N 有 X，Y 两个页面，Y 也设置了 <code>taskAffinity</code> 属性，并且和 C 一样。</p>
+<p>此时我们依次打开 A，B，C，回到 Launcher 页面，依次打开 X，Y。这时候从任务栏里面看到的是 3 个 Task 开启。当前页面是 Y，点击回退会回到 C（注意，不是 X），再点击会回到 X（系统记录，上一个展示的栈是 X 代表的栈），再点击回退会回到 Launcher 页面（同样是系统记录）。这时候再点开应用 1，展示的是 B 页面，点击返回回到 A 页面，再点击就回到 Launcher 页面。</p>
+<h2 id="allowTaskReparenting-属性"><a href="#allowTaskReparenting-属性" class="headerlink" title="allowTaskReparenting 属性"></a><code>allowTaskReparenting</code> 属性</h2><p>假设有应用 M 和 N，N 有一个页面 A，设置了该属性，如果 M 启动了 A 页面，此时 A 页面在 M 的任务栈内，如果此时 M 退到后台，把 N 唤到前台，那么 A 页面会从 M 的任务栈迁移到 N 的任务栈的最顶层，这就是该属性的作用：即允许 Activity 迁移到与自己 <code>taskAffinity</code>一致的栈中。</p>
+<blockquote>
+<p>举一个形象点的例子，比如有一个天气预报程序，它有一个用于显示天气信息的 Activity，<code>allowTaskReparenting</code> 属性设置成 true，这个 Activity 和天气预报程序的所有其它 Activity 具体相同的 affinity 值。这个时候，你自己的应用程序通过 Intent 去启动了这个用于显示天气信息的 Activity，那么此时这个 Activity 应该是和你的应用程序是在同一个任务当中的。但是当把天气预报程序切换到前台的时候，这个 Activity 会被转移到天气预报程序的任务当中，并显示出来。如果将你自己的应用切换到前台，发现你自己应用 Task 里的那个 Activity 消失了。</p>
+</blockquote>
+<h2 id="FLAG-ACTIVITY-NEW-TASK-Flag"><a href="#FLAG-ACTIVITY-NEW-TASK-Flag" class="headerlink" title="FLAG_ACTIVITY_NEW_TASK Flag"></a><code>FLAG_ACTIVITY_NEW_TASK</code> Flag</h2><p>会查找当前系统内有没有和要启动的 Activity A <code>taskAffinity</code> 一样的栈：</p>
+<ol>
+<li>如果有，则创建实例（具体以 A 的 <code>launchMode</code> 配置为准）压入栈，并且把这个栈调度为前台栈；</li>
+<li>如果没有，则新建栈，把 A 压入；</li>
+</ol>
+<p><strong>注意和 <code>singleTask</code> 的区别。</strong></p>
+<h1 id="Intent-的常用-Flag-参数"><a href="#Intent-的常用-Flag-参数" class="headerlink" title="Intent 的常用 Flag 参数"></a>Intent 的常用 Flag 参数</h1><ol>
+<li><strong>FLAG_ACTIVITY_CLEAR_TOP：</strong> 例如现在的栈情况为：A B C D 。D 此时通过 intent 跳转到 B，如果这个intent添加 <code>FLAG_ACTIVITY_CLEAR_TOP</code> 标记，则栈情况变为：A B。如果没有添加这个标记，则栈情况将会变成：A B C D B。也就是说，如果添加了 <code>FLAG_ACTIVITY_CLEAR_TOP</code> 标记，并且目标 Activity 在栈中已经存在，则将会把位于该目标 activity 之上的 activity 从栈中弹出销毁。这跟上面把 B 的 Launch mode 设置成 singleTask 类似。</li>
+<li><strong>FLAG_ACTIVITY_NO_HISTORY：</strong> 例如现在栈情况为：A B C。C 通过 intent 跳转到 D，这个 intent 添加 <code>FLAG_ACTIVITY_NO_HISTORY</code> 标志，则此时界面显示 D 的内容，如果此时 D 中又跳转到E，栈的情况变为：A B C E，此时按返回键会回到 C，因为 D 根本就没有被压入栈中。</li>
+<li><strong>FLAG_ACTIVITY_SINGLE_TOP：</strong> 和上面 Activity 的 Launch mode 的 singleTop 类似。如果某个 intent 添加了这个标志，并且这个 intent 的目标 activity 就是栈顶的 activity，那么将不会新建一个实例压入栈中。</li>
+<li><strong>FLAG_ACTIVITY_NEW_TASK：</strong> 例如现在栈 1 的情况是：A B C。C 通过 intent 跳转到 D，并且这个 intent 添加了 <code>FLAG_ACTIVITY_NEW_TASK</code> 标记，如果 D 这个 Activity 在 Manifest.xml 中的声明中添加了 Task affinity，并且和栈 1 的 affinity 不同，系统首先会查找有没有和 D 的 Task affinity 相同的 task 栈存在，如果有存在，将 D 压入那个栈，如果不存在则会新建一个 D 的 affinity 的栈将其压入。如果 D 的 Task affinity 默认没有设置，或者和栈 1 的 affinity 相同，则会把其压入栈1，变成：A B C D，这样就和不加 <code>FLAG_ACTIVITY_NEW_TASK</code> 标记效果是一样的了。<br>注意：如果试图从非 activity 的非正常途径启动一个 activity，比如从一个 service 中启动一个 activity，则 intent 必须要添加 <code>FLAG_ACTIVITY_NEW_TASK</code> 标记。</li>
+<li><strong>FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET：</strong> 如果设置，这将在 Task 的 Activity Stack 中设置一个还原点，当Task恢复时，需要清理 Activity。例如下一次 Task 带着 <code>FLAG_ACTIVITY_RESET_TASK_IF_NEEDED</code> 标记进入前台时，这个 Activity 和它之上的都将关闭，以至于用户不能再返回到它们，但是可以回到之前的 Activity。</li>
+<li><strong>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS：</strong> 如果设置，新的 Activity 不会在最近启动的 Activity 的列表中保存。</li>
+<li><strong>FLAG_ACTIVITY_FORWARD_RESULT：</strong> 如果设置，并且这个Intent用于从一个存在的 Activity 启动一个新的 Activity，那么，这个作为答复目标的 Activity 将会传到这个新的 Activity 中。这种方式下，新的Activity可以调用 <code>setResult(int)</code>，并且这个结果值将发送给那个作为答复目标的 Activity。</li>
+<li><strong>FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY：</strong> 这个标志一般不由应用程序代码设置，如果这个 Activity 是从历史记录里启动的（常按HOME键），那么，系统会帮你设定。</li>
+<li><strong>FLAG_ACTIVITY_MULTIPLE_TASK：</strong> 不建议使用此标志，除非你自己实现了应用程序启动器。</li>
+<li><strong>FLAG_ACTIVITY_NO_ANIMATION：</strong> 这个标志将阻止系统进入下一个 Activity 时应用 Acitivity 迁移动画。</li>
+<li><strong>FLAG_ACTIVITY_NO_USER_ACTION：</strong> 这个标志将在 Activity 暂停之前阻止从最前方的 Activity 回调的 <code>onUserLeaveHint()</code>。</li>
+<li><strong>FLAG_ACTIVITY_PREVIOUS_IS_TOP：</strong> If set and this intent is being used to launch a new activity from an existing one, the current activity will not be counted as the top activity for deciding whether the new intent should be delivered to the top instead of starting a new one. The previous activity will be used as the top, with the assumption being that the current activity will finish itself immediately.</li>
+<li><strong>FLAG_ACTIVITY_REORDER_TO_FRONT：</strong> 这个标志将引发已经运行的 Activity 移动到历史 stack 的顶端。</li>
+<li><strong>FLAG_ACTIVITY_RESET_TASK_IF_NEEDED：</strong> If set, and this activity is either being started in a new task or bringing to the top an existing task, then it will be launched as the front door of the task. This will result in the application of any affinities needed to have that task in the proper state (either moving activities to or from it), or simply resetting that task to its initial state if needed.</li>
+<li><strong>Intent.FLAG_ACTIVITY_REORDER_TO_FRONT：</strong> 这个标志表示：如果这个 activity 已经启动了，就不产生新的 activity，而只是把这个 activity 实例加到栈顶来就可以了。</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实 Activity 的管理涉及到的是两件事：</p>
+<ol>
+<li>通过 LaunchMode 和 <code>taskAffinity</code> 等手段控制栈的建立和 Activity 到底入哪个栈；</li>
+<li>系统记录了栈的展示顺序，会依次回退展示；</li>
+</ol>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://inthecheesefactory.com/blog/understand-android-activity-launchmode/en">Understand Android Activity’s launchMode: standard, singleTop, singleTask and singleInstance</a></li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2018/12/04/Android-Intent-FLAG/">https://qianyuebits.github.io/2018/12/04/Android-Intent-FLAG/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/Android/"># Android</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/01/17/Java-ThreadPool/">Java ThreadPool</a>
+            
+            
+            <a class="next" rel="next" href="/2014/05/25/Android-Handler/">Android Handler</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 千越 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

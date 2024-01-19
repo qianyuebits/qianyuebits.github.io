@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="千越">
+
+
+
+
+
+<title>Java Thread 常用方法 | 千越</title>
+
+
+
+    <link rel="icon" href="/image/icon.jpeg">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">千越的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">千越的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于我</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java Thread 常用方法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">千越</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2024-01-17&nbsp;&nbsp;21:11:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%E6%8A%80%E6%9C%AF/">技术</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Wait-amp-Notify"><a href="#Wait-amp-Notify" class="headerlink" title="Wait &amp; Notify"></a><code>Wait</code> &amp; <code>Notify</code></h1><p>在 Java 中，可以通过配合调用 Object 对象的 <code>wait()</code>&#x2F;<code>notify()</code>&#x2F;<code>notifyAll()</code> 方法来实现线程间的通信。在线程中调用 <code>wait()</code> 方法，将阻塞等待其他线程的通知。在线程中调用 <code>notify()</code> 方法或 <code>notifyAll()</code> 方法，将通知其他线程从 <code>wait()</code> 方法处返回。这三个方法都是操作锁的，必须在获取锁之后调用，否则会报出 <code>IllegalMonitorStateException</code> 异常。</p>
+<p>Object 是所有类的超类，它有 5 个方法组成了等待&#x2F;通知机制的核心：<code>notify()</code>、<code>notifyAll()</code>、<code>wait()</code>、<code>wait(long)</code> 和 <code>wait(long，int)</code>。在 Java 中，所有的类都从 Object 继承而来，因此，所有的类都拥有这些共有方法可供使用。而且，由于他们都被声明为 <code>final</code>，因此在子类中不能覆写任何一个方法。</p>
+<p>这里详细说明一下各个方法在使用中需要注意的几点：</p>
+<ol>
+<li><code>public final void wait() throws InterruptedException,IllegalMonitorStateException</code> 该方法用来将当前线程置入休眠状态，直到接到通知或被中断为止。在调用 wait() 之前，线程必须要获得该对象的对象级别锁，即只能在同步方法或同步块中调用 wait() 方法。进入wait()方法后，当前线程释放锁（这一点和 sleep 以及 yield 都不一样）。在从 wait() 返回前，线程与其他线程竞争重新获得锁。如果调用 wait() 时，没有持有适当的锁，则抛出 <code>IllegalMonitorStateException</code>，它是 <code>RuntimeException</code> 的一个子类，因此，不需要 try-catch 结构。</li>
+<li><code>public final native void notify() throws IllegalMonitorStateException</code><br>该方法也要在同步方法或同步块中调用，即在调用前，线程也必须要获得该对象的对象级别的锁，如果调用 <code>notify()</code> 时没有持有适当的锁，也会抛出 <code>IllegalMonitorStateException</code>。该方法用来通知那些可能等待该对象的对象锁的其他线程。如果有多个线程等待，则线程规划器任意挑选出其中一个 <code>wait()</code> 状态的线程来发出通知，并使它等待获取该对象的对象锁（notify 后，当前线程不会马上释放该对象锁，wait 所在的线程并不能马上获取该对象锁，要等到程序退出 synchronized 代码块后，当前线程才会释放锁，wait 所在的线程也才可以获取该对象锁），但不惊动其他同样在等待被该对象 notify 的线程们。当第一个获得了该对象锁的 wait 线程运行完毕以后，它会释放掉该对象锁，此时如果该对象没有再次使用 notify 语句，则即便该对象已经空闲，其他 wait 状态等待的线程由于没有得到该对象的通知，会继续阻塞在wait 状态，直到这个对象发出一个 notify 或 notifyAll。这里需要注意：它们等待的是被 notify 或 notifyAll，而不是锁。这与下面的 <code>notifyAll()</code> 方法执行后的情况不同；</li>
+<li><code>public final native void notifyAll() throws IllegalMonitorStateException</code> 该方法与 <code>notify()</code> 方法的工作方式相同，重要的一点差异是：<code>notifyAll()</code> 使所有原来在该对象上 wait 的线程统统退出 wait 的状态（即全部被唤醒，不再等待 notify 或 notifyAll，但由于此时还没有获取到该对象锁，因此还不能继续往下执行），变成等待获取该对象上的锁，一旦该对象锁被释放（notifyAll 线程退出调用了 notifyAll 的 synchronized 代码块的时候），他们就会去竞争。如果其中一个线程获得了该对象锁，它就会继续往下执行，在它退出 synchronized 代码块，释放锁后，其他的已经被唤醒的线程将会继续竞争获取该锁，一直进行下去，直到所有被唤醒的线程都执行完毕；</li>
+<li><code>wait(long)/wait(long, int)</code> 显然，这两个方法是设置等待超时时间的，后者在超值时间上加上 ns，精度也难以达到，因此，该方法很少使用。对于前者，如果在等待线程接到通知或被中断之前，已经超过了指定的毫秒数，则它通过竞争重新获得锁，并从 <code>wait(long)</code> 返回。另外，需要知道，如果设置了超时时间，当 wait() 返回时，我们不能确定它是因为接到了通知还是因为超时而返回的，因为 <code>wait()</code> 方法不会返回任何相关的信息。但一般可以通过设置标志位来判断，在 notify 之前改变标志位的值，在 <code>wait()</code> 方法后读取该标志位的值来判断，当然为了保证 notify 不被遗漏，我们还需要另外一个标志位来循环判断是否调用 <code>wait()</code> 方法；</li>
+</ol>
+<p>深入理解：</p>
+<ul>
+<li>如果线程调用了对象的 <code>wait()</code> 方法，那么线程便会处于该对象的等待池中，等待池中的线程不会去竞争该对象的锁；</li>
+<li>当有线程调用了对象的 <code>notifyAll()</code> 方法（唤醒所有 wait 线程）或 <code>notify()</code> 方法（只随机唤醒一个 wait 线程），被唤醒的线程便会进入该对象的锁池中，锁池中的线程会去竞争该对象锁；</li>
+<li>优先级高的线程竞争到对象锁的概率大，假若某线程没有竞争到该对象锁，它还会留在锁池中，唯有线程再次调用 <code>wait()</code> 方法，它才会重新回到等待池中。而竞争到对象锁的线程则继续往下执行，直到执行完了 synchronized 代码块，它会释放掉该对象锁，这时锁池中的线程会继续竞争该对象锁；</li>
+</ul>
+<h1 id="interrupt"><a href="#interrupt" class="headerlink" title="interrupt()"></a><code>interrupt()</code></h1><p>当一个线程运行时，另一个线程可以调用对应的 Thread 对象的 <code>interrupt()</code> 方法来中断它，该方法只是在目标线程中设置一个标志，表示它已经被中断，并立即返回。这里需要注意的是，如果只是单纯的调用 <code>interrupt()</code>方法，线程并没有实际被中断，会继续往下执行。</p>
+<p>在上面的例子中，<code>sleep()</code> 方法的实现检查到休眠线程被中断，它会相当友好地终止线程，并抛出 <code>InterruptedException</code> 异常。另外一种情况，如果线程在调用 <code>sleep()</code> 方法前被中断，那么该中断称为待决中断，它会在刚调用 sleep（）方法时，立即抛出 <code>InterruptedException</code> 异常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The interrupt mechanism is implemented using an internal flag known as the interrupt status. Invoking Thread.interrupt sets this flag.</span><br><span class="line">When a thread checks for an interrupt by invoking the static method Thread.interrupted, interrupt status is cleared. The non-static isInterrupted method, which is used by one thread to query the interrupt status of another, does not change the interrupt status flag.</span><br><span class="line">By convention, any method that exits by throwing an InterruptedException clears interrupt status when it does so. However, it&#x27;s always possible that interrupt status will immediately be set again, by another thread invoking interrupt.</span><br></pre></td></tr></table></figure>
+
+<p>以上部分说明，在 catch 和 finally 中调用 isInterrupted 方法都将得到 false 结果（标记为被清除）。<br>总结：一个 Thread 在 sleep、join、wait 等过程中，都有可能被 interrupt，此时就会抛出异常，编译器强制要求捕捉该异常。当我们可以向一个 Thread 发起 interrupt 消息，会改变线程的 interrupt flag 标记，线程可以去检查该 flag，做出相应地措施，相反也可以不作出任何反应；注意 flag 的清除机制（见英文部分）。</p>
+<h1 id="sleep"><a href="#sleep" class="headerlink" title="sleep()"></a><code>sleep()</code></h1><p>使当前线程（即调用该方法的线程）暂停执行一段时间，让其他线程有机会继续执行，但它并不释放对象锁。也就是说如果有 synchronized 同步块，其他线程仍然不能访问共享数据。</p>
+<h1 id="join"><a href="#join" class="headerlink" title="join()"></a><code>join()</code></h1><p>在一个线程中调用 <code>t.join()</code>，则该线程会等待 t 线程线程执行完毕后（<code>t.isAlive()</code>为 false）再往下继续执行。注意该方法也需要捕捉异常。</p>
+<h1 id="yield"><a href="#yield" class="headerlink" title="yield()"></a><code>yield()</code></h1><p>该方法与 <code>sleep()</code> 类似，只是不能由用户指定暂停多长时间，并且 <code>yield()</code> 方法只能让同优先级的线程有执行的机会（注意和 sleep 的区别）。不过并不保证，按照 TIJ 的说法，只是一个 hint。实际上，<code>yield()</code> 方法对应了如下操作；先检测当前是否有相同优先级的线程处于同可运行状态，如有，则把 CPU 的占有权交给次线程，否则继续运行原来的线程，所以 <code>yield()</code> 方法称为“退让”，它把运行机会让给了同等级的其他线程。 <code>yield()</code> 只是使当前线程重新回到可执行状态。</p>
+<h1 id="setDefaultUncaughtExceptionHandler-和-setUncaughtExceptionHandler"><a href="#setDefaultUncaughtExceptionHandler-和-setUncaughtExceptionHandler" class="headerlink" title="setDefaultUncaughtExceptionHandler() 和 setUncaughtExceptionHandler()"></a><code>setDefaultUncaughtExceptionHandler()</code> 和 <code>setUncaughtExceptionHandler()</code></h1><p>线程的异常捕获是通过 <code>UncaughtExceptionHandler</code> 来进行的，一旦在线程上绑定了它，当线程因为异常退出，在退出之前会在这里进行回调。设置 <code>UncaughtExceptionHandler</code> 有两种方式：</p>
+<ul>
+<li>全局：<code>static void setDefaultUncaughtExceptionHandler( Thread.UncaughtExceptionHandler handler)</code>;</li>
+<li>本地：<code>void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler handler)</code>;</li>
+</ul>
+<p>本地 Handler 的优先级更高。通常来说，我们只应该添加行为，而不应该替代原有的默认行为:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ErrorReportExceptionHandler</span> <span class="keyword">implements</span> <span class="title class_">Thread</span>.UncaughtExceptionHandler &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Thread.UncaughtExceptionHandler defaultHandler;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ErrorReportExceptionHandler</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">uncaughtException</span><span class="params">(Thread thread, Throwable throwable)</span>&#123;</span><br><span class="line">        reportErrorToFile(throwable);</span><br><span class="line">        defaultHandler.uncaughtException(thread, throwable);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>千越</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://qianyuebits.github.io/2024/01/17/Java-Thread-Methods/">https://qianyuebits.github.io/2024/01/17/Java-Thread-Methods/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/Java/"># Java</a>
+                    
+                        <a href="/tag/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"># 多线程</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/01/17/Java-Thread-Concept/">Java Thread 常见概念</a>
+            
+            
+            <a class="next" rel="next" href="/2024/01/17/Java-ThreadPool/">Java ThreadPool</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 千越 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
