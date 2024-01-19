@@ -11,6 +11,24 @@
   </url>
   
   <url>
+    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-State/</loc>
+    
+    <lastmod>2024-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://qianyuebits.github.io/2024/01/18/Java-Generics/</loc>
+    
+    <lastmod>2024-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Android-Service/</loc>
     
     <lastmod>2024-01-19</lastmod>
@@ -137,15 +155,6 @@
   </url>
   
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Java-Generics/</loc>
-    
-    <lastmod>2024-01-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Java-RTTI/</loc>
     
     <lastmod>2024-01-18</lastmod>
@@ -156,15 +165,6 @@
   
   <url>
     <loc>https://qianyuebits.github.io/2024/01/17/Java-ThreadPool/</loc>
-    
-    <lastmod>2024-01-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/17/Java-Thread-State/</loc>
     
     <lastmod>2024-01-17</lastmod>
     
@@ -218,14 +218,14 @@
 
   
   <url>
-    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
+    <loc>https://qianyuebits.github.io/tag/Android/</loc>
     <lastmod>2024-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://qianyuebits.github.io/tag/Android/</loc>
+    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
     <lastmod>2024-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
