@@ -274,7 +274,7 @@
 <li>特殊收集器：G1收集器（新型，不在年轻、老年代范畴内）</li>
 </ol>
 <p>从名字就可以看出它们主要的区别是单线程收集还是单线程收集。</p>
-<h3 id="CMS-收集器"><a href="#CMS-收集器" class="headerlink" title="CMS 收集器"></a>CMS 收集器</h3><p>Concurrent Mark Sweep，从名字上看，就能猜出它是并发多线程的。这是 JDK 7 中广泛使用的收集器，有必要多说一下，借一张网友的图说话：<br><img src="/images/gc_collector_cms.webp"></p>
+<h4 id="CMS-收集器"><a href="#CMS-收集器" class="headerlink" title="CMS 收集器"></a>CMS 收集器</h4><p>Concurrent Mark Sweep，从名字上看，就能猜出它是并发多线程的。这是 JDK 7 中广泛使用的收集器，有必要多说一下，借一张网友的图说话：<br><img src="/images/gc_collector_cms.webp"></p>
 <p>它的收集过程分为 4 个阶段：</p>
 <ol>
 <li><strong>Inital Mark 初始标记</strong> 主要是标记 GC Root 开始的下级（注：仅下一级）对象，这个过程会 STW，但是跟 GC Root 直接关联的下级对象不会很多，因此这个过程其实很快；</li>
