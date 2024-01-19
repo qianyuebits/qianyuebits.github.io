@@ -22,8 +22,8 @@ https://qianyuebits.github.io/about/index.html
 https://qianyuebits.github.io/category/index.html
 https://qianyuebits.github.io/tag/index.html
 https://qianyuebits.github.io/
-https://qianyuebits.github.io/tag/Android/
 https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/
+https://qianyuebits.github.io/tag/Android/
 https://qianyuebits.github.io/tag/Java/
 https://qianyuebits.github.io/tag/%E5%86%85%E5%AD%98/
 https://qianyuebits.github.io/tag/%E5%A4%9A%E7%BA%BF%E7%A8%8B/
