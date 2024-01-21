@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
+    <lastmod>2024-01-21</lastmod>
+  </url>
+  <url>
+    <loc>https://qianyuebits.github.io/2022/05/18/Android-Async-Update-UI/</loc>
+    <lastmod>2024-01-21</lastmod>
+  </url>
+  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Android-Interview/</loc>
     <lastmod>2024-01-20</lastmod>
   </url>
@@ -62,10 +70,6 @@
   </url>
   <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Java-Exception/</loc>
-    <lastmod>2024-01-18</lastmod>
-  </url>
-  <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
     <lastmod>2024-01-18</lastmod>
   </url>
   <url>

@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
+    
+    <lastmod>2024-01-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://qianyuebits.github.io/2022/05/18/Android-Async-Update-UI/</loc>
+    
+    <lastmod>2024-01-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Android-Interview/</loc>
     
     <lastmod>2024-01-20</lastmod>
@@ -146,15 +164,6 @@
   </url>
   
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
-    
-    <lastmod>2024-01-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://qianyuebits.github.io/2024/01/18/Java-RTTI/</loc>
     
     <lastmod>2024-01-18</lastmod>
@@ -225,6 +234,13 @@
   </url>
   
   <url>
+    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
+    <lastmod>2024-01-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://qianyuebits.github.io/tag/Java/</loc>
     <lastmod>2024-01-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -233,13 +249,6 @@
   
   <url>
     <loc>https://qianyuebits.github.io/tag/%E5%86%85%E5%AD%98/</loc>
-    <lastmod>2024-01-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
     <lastmod>2024-01-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
