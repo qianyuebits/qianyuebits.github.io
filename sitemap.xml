@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
+    <loc>https://qianyuebits.github.io/2024/01/18/Android-Interview/</loc>
     
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -13,16 +13,16 @@
   <url>
     <loc>https://qianyuebits.github.io/2022/05/18/Android-Async-Update-UI/</loc>
     
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-22</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://qianyuebits.github.io/2024/01/18/Android-Interview/</loc>
+    <loc>https://qianyuebits.github.io/2024/01/18/Java-Dynamic-Proxy/</loc>
     
-    <lastmod>2024-01-20</lastmod>
+    <lastmod>2024-01-21</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -220,7 +220,7 @@
 
   <url>
     <loc>https://qianyuebits.github.io/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -228,35 +228,35 @@
   
   <url>
     <loc>https://qianyuebits.github.io/tag/Android/</loc>
-    <lastmod>2024-01-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://qianyuebits.github.io/tag/Java/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://qianyuebits.github.io/tag/%E5%86%85%E5%AD%98/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://qianyuebits.github.io/tag/%E9%9D%A2%E8%AF%95/</loc>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://qianyuebits.github.io/tag/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -265,7 +265,7 @@
   
   <url>
     <loc>https://qianyuebits.github.io/category/%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2024-01-21</lastmod>
+    <lastmod>2024-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
